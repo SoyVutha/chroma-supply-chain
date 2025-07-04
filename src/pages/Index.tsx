@@ -1,124 +1,51 @@
 
-import React, { useState } from 'react';
-import Sidebar from '@/components/Layout/Sidebar';
-import DashboardStats from '@/components/Dashboard/DashboardStats';
-import InventoryTable from '@/components/Inventory/InventoryTable';
-import OrdersTable from '@/components/Orders/OrdersTable';
-import ProductionSchedule from '@/components/Production/ProductionSchedule';
-import CustomersTable from '@/components/Customers/CustomersTable';
-import TicketsTable from '@/components/Support/TicketsTable';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { User } from 'lucide-react';
+import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 
 const Index = () => {
-  const [activeSection, setActiveSection] = useState('dashboard');
-  const [userRole, setUserRole] = useState<'inventory_manager' | 'production_worker' | 'customer_service'>('inventory_manager');
-
-  const renderContent = () => {
-    switch (activeSection) {
-      case 'dashboard':
-        return (
-          <div className="space-y-6">
-            <DashboardStats userRole={userRole} />
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {userRole === 'inventory_manager' && <InventoryTable />}
-              {userRole === 'production_worker' && <ProductionSchedule />}
-              {userRole === 'customer_service' && <TicketsTable />}
-              <OrdersTable />
-            </div>
-          </div>
-        );
-      
-      case 'inventory':
-        return <InventoryTable />;
-      
-      case 'orders':
-        return <OrdersTable />;
-      
-      case 'production':
-        return <ProductionSchedule />;
-      
-      case 'customers':
-        return <CustomersTable />;
-      
-      case 'tickets':
-        return <TicketsTable />;
-      
-      case 'products':
-      case 'quality':
-      case 'settings':
-        return (
-          <Card>
-            <CardHeader>
-              <CardTitle className="capitalize">{activeSection}</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-gray-600">This section is under development. More features coming soon!</p>
-            </CardContent>
-          </Card>
-        );
-      
-      default:
-        return (
-          <Card>
-            <CardHeader>
-              <CardTitle>Welcome to Manufacturing ERP</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-gray-600">Select a section from the sidebar to get started.</p>
-            </CardContent>
-          </Card>
-        );
-    }
-  };
+  const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Sidebar 
-        activeSection={activeSection} 
-        onSectionChange={setActiveSection}
-        userRole={userRole}
-      />
-      
-      <div className="ml-64 p-6">
-        <div className="mb-6 flex justify-between items-center">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900 capitalize">
-              {activeSection === 'dashboard' ? 'Dashboard' : activeSection.replace('_', ' ')}
-            </h1>
-            <p className="text-gray-600 mt-1">
-              Manufacturing ERP System - {userRole.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())} Portal
-            </p>
-          </div>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+      <div className="container mx-auto px-4 py-16">
+        <div className="text-center max-w-4xl mx-auto">
+          <h1 className="text-6xl font-bold text-gray-900 mb-6">
+            Welcome to <span className="text-blue-600">Metaflow</span>
+          </h1>
+          <p className="text-xl text-gray-600 mb-8">
+            Your comprehensive manufacturing ERP system and premium product store
+          </p>
           
-          <div className="flex items-center gap-3">
-            <a 
-              href="/customer" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors text-sm font-medium"
-            >
-              View Customer Store
-            </a>
-            <div className="flex items-center gap-2">
-              <User size={16} className="text-gray-500" />
-              <Select value={userRole} onValueChange={(value: any) => setUserRole(value)}>
-                <SelectTrigger className="w-48">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="inventory_manager">Inventory Manager</SelectItem>
-                  <SelectItem value="production_worker">Production Worker</SelectItem>
-                  <SelectItem value="customer_service">Customer Service</SelectItem>
-                </SelectContent>
-              </Select>
+          <div className="grid md:grid-cols-2 gap-8 mt-12">
+            <div className="bg-white rounded-lg shadow-lg p-8">
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">Customer Store</h2>
+              <p className="text-gray-600 mb-6">
+                Browse and purchase premium manufacturing products with secure authentication
+              </p>
+              <Button 
+                onClick={() => navigate('/customer')}
+                className="w-full"
+                size="lg"
+              >
+                Shop Now
+              </Button>
+            </div>
+            
+            <div className="bg-white rounded-lg shadow-lg p-8">
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">ERP Dashboard</h2>
+              <p className="text-gray-600 mb-6">
+                Manage inventory, production, and customer service operations
+              </p>
+              <Button 
+                variant="outline"
+                className="w-full"
+                size="lg"
+                disabled
+              >
+                Coming Soon
+              </Button>
             </div>
           </div>
-        </div>
-        
-        <div className="animate-fade-in">
-          {renderContent()}
         </div>
       </div>
     </div>
