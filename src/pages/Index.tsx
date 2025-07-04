@@ -93,6 +93,14 @@ const Index = () => {
           </div>
           
           <div className="flex items-center gap-3">
+            <a 
+              href="/customer" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors text-sm font-medium"
+            >
+              View Customer Store
+            </a>
             <div className="flex items-center gap-2">
               <User size={16} className="text-gray-500" />
               <Select value={userRole} onValueChange={(value: any) => setUserRole(value)}>
