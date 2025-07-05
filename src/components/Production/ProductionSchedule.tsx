@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -94,13 +93,13 @@ const ProductionSchedule: React.FC = () => {
     const config = {
       scheduled: { variant: 'secondary' as const, label: 'Scheduled' },
       in_progress: { variant: 'default' as const, label: 'In Progress' },
-      completed: { variant: 'default' as const, label: 'Completed', class: 'bg-green-100 text-green-800' },
+      completed: { variant: 'secondary' as const, label: 'Completed', className: 'bg-green-100 text-green-800' },
       delayed: { variant: 'destructive' as const, label: 'Delayed' }
     };
     
     const taskConfig = config[status];
     return (
-      <Badge variant={taskConfig.variant} className={taskConfig.class || ''}>
+      <Badge variant={taskConfig.variant} className={taskConfig.className || ''}>
         {taskConfig.label}
       </Badge>
     );

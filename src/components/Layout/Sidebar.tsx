@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { 
@@ -7,7 +6,7 @@ import {
   ShoppingCart, 
   Users, 
   Settings,
-  Production,
+  Factory,
   Headphones,
   ClipboardCheck,
   BarChart3
@@ -33,7 +32,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeSection, onSectionChange, userR
         { id: 'products', label: 'Products', icon: BarChart3 }
       ],
       production_worker: [
-        { id: 'production', label: 'Production', icon: Production },
+        { id: 'production', label: 'Production', icon: Factory },
         { id: 'quality', label: 'Quality Control', icon: ClipboardCheck },
         { id: 'inventory', label: 'View Inventory', icon: Package }
       ],
