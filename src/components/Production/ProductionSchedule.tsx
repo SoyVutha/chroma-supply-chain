@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -91,15 +92,15 @@ const ProductionSchedule: React.FC = () => {
 
   const getStatusBadge = (status: ProductionTask['status']) => {
     const config = {
-      scheduled: { variant: 'secondary' as const, label: 'Scheduled' },
-      in_progress: { variant: 'default' as const, label: 'In Progress' },
+      scheduled: { variant: 'secondary' as const, label: 'Scheduled', className: '' },
+      in_progress: { variant: 'default' as const, label: 'In Progress', className: '' },
       completed: { variant: 'secondary' as const, label: 'Completed', className: 'bg-green-100 text-green-800' },
-      delayed: { variant: 'destructive' as const, label: 'Delayed' }
+      delayed: { variant: 'destructive' as const, label: 'Delayed', className: '' }
     };
     
     const taskConfig = config[status];
     return (
-      <Badge variant={taskConfig.variant} className={taskConfig.className || ''}>
+      <Badge variant={taskConfig.variant} className={taskConfig.className}>
         {taskConfig.label}
       </Badge>
     );
