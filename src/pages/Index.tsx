@@ -1,9 +1,27 @@
 
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Index = () => {
   const navigate = useNavigate();
+  const { user, loading } = useAuth();
+
+  const handleCustomerStoreClick = () => {
+    if (user) {
+      navigate('/customer');
+    } else {
+      navigate('/auth');
+    }
+  };
+
+  const handleERPClick = () => {
+    if (user) {
+      navigate('/erp');
+    } else {
+      navigate('/auth');
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
@@ -15,6 +33,20 @@ const Index = () => {
           <p className="text-xl text-gray-600 mb-8">
             Your comprehensive manufacturing ERP system and premium product store
           </p>
+
+          {!loading && !user && (
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-8">
+              <p className="text-blue-800 font-medium">
+                Please sign in to access the Customer Store and ERP Dashboard
+              </p>
+              <Button 
+                onClick={() => navigate('/auth')}
+                className="mt-2"
+              >
+                Sign In / Sign Up
+              </Button>
+            </div>
+          )}
           
           <div className="grid md:grid-cols-2 gap-8 mt-12">
             <div className="bg-white rounded-lg shadow-lg p-8">
@@ -23,11 +55,11 @@ const Index = () => {
                 Browse and purchase premium manufacturing products with secure authentication
               </p>
               <Button 
-                onClick={() => navigate('/customer')}
+                onClick={handleCustomerStoreClick}
                 className="w-full"
                 size="lg"
               >
-                Shop Now
+                {user ? 'Shop Now' : 'Sign In to Shop'}
               </Button>
             </div>
             
@@ -37,11 +69,11 @@ const Index = () => {
                 Manage inventory, production, and customer service operations
               </p>
               <Button 
-                onClick={() => navigate('/erp')}
+                onClick={handleERPClick}
                 className="w-full"
                 size="lg"
               >
-                Access ERP System
+                {user ? 'Access ERP System' : 'Sign In for ERP'}
               </Button>
             </div>
           </div>

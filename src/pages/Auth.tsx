@@ -48,9 +48,12 @@ const Auth = () => {
           navigate('/customer');
         } else {
           toast({
-            title: "Account Created",
-            description: "Please check your email to verify your account.",
+            title: "Account Created Successfully!",
+            description: "You can now sign in with your credentials. No email verification required.",
           });
+          // Automatically switch to login after successful signup
+          setIsLogin(true);
+          setPassword('');
         }
       }
     } catch (error: any) {
@@ -69,7 +72,7 @@ const Auth = () => {
       <div className="max-w-md w-full space-y-8">
         <div className="text-center">
           <h1 className="text-3xl font-bold text-blue-600 mb-2">Metaflow</h1>
-          <p className="text-gray-600">Premium Manufacturing Products</p>
+          <p className="text-gray-600">Premium Manufacturing Products & ERP System</p>
         </div>
 
         <Card>
@@ -78,7 +81,7 @@ const Auth = () => {
             <CardDescription>
               {isLogin 
                 ? 'Welcome back! Please sign in to your account.' 
-                : 'Join us to access premium manufacturing products.'
+                : 'Join us to access premium manufacturing products and ERP system.'
               }
             </CardDescription>
           </CardHeader>
