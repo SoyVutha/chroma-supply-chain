@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { useAuth } from '@/contexts/AuthContext';
+import { useERPAuth } from '@/contexts/ERPAuthContext';
 import { useNavigate } from 'react-router-dom';
 import Sidebar from '@/components/Layout/Sidebar';
 import DashboardStats from '@/components/Dashboard/DashboardStats';
@@ -11,14 +11,13 @@ import { Button } from '@/components/ui/button';
 import { LogOut } from 'lucide-react';
 
 const ERP = () => {
-  const { user, signOut, loading } = useAuth();
+  const { user, signOut, loading, userRole } = useERPAuth();
   const navigate = useNavigate();
   const [activeSection, setActiveSection] = useState('dashboard');
-  const [userRole, setUserRole] = useState<'inventory_manager' | 'production_worker' | 'customer_service'>('inventory_manager');
 
   useEffect(() => {
     if (!loading && !user) {
-      navigate('/auth');
+      navigate('/erp-auth');
     }
   }, [user, loading, navigate]);
 
@@ -87,40 +86,19 @@ const ERP = () => {
           <div>
             <h1 className="text-3xl font-bold text-gray-900 mb-8">ERP Settings</h1>
             <div className="bg-white rounded-lg shadow p-6">
-              <h2 className="text-xl font-semibold mb-4">User Role Simulation</h2>
+              <h2 className="text-xl font-semibold mb-4">Staff Role Information</h2>
               <p className="text-gray-600 mb-4">
-                Switch between different user roles to see how the ERP system adapts to different permissions and workflows.
+                Your current role determines what features and data you can access in the ERP system.
               </p>
               <p className="text-sm text-gray-500 mb-4">Current role: <span className="font-medium capitalize">{userRole.replace('_', ' ')}</span></p>
-              <div className="space-y-2">
-                <Button 
-                  variant={userRole === 'inventory_manager' ? 'default' : 'outline'}
-                  onClick={() => setUserRole('inventory_manager')}
-                  className="mr-2 mb-2"
-                >
-                  Inventory Manager
-                </Button>
-                <Button 
-                  variant={userRole === 'production_worker' ? 'default' : 'outline'}
-                  onClick={() => setUserRole('production_worker')}
-                  className="mr-2 mb-2"
-                >
-                  Production Worker
-                </Button>
-                <Button 
-                  variant={userRole === 'customer_service' ? 'default' : 'outline'}
-                  onClick={() => setUserRole('customer_service')}
-                  className="mb-2"
-                >
-                  Customer Service
-                </Button>
-              </div>
+              
               <div className="mt-6 p-4 bg-blue-50 rounded-lg">
-                <h3 className="font-medium text-blue-900 mb-2">Role Descriptions:</h3>
+                <h3 className="font-medium text-blue-900 mb-2">Role Access Rights:</h3>
                 <ul className="text-sm text-blue-800 space-y-1">
                   <li><strong>Inventory Manager:</strong> Full access to inventory, orders, and product management</li>
                   <li><strong>Production Worker:</strong> Focus on production schedules, quality control, and inventory viewing</li>
                   <li><strong>Customer Service:</strong> Access to support tickets, customer management, and order viewing</li>
+                  <li><strong>Admin:</strong> Full system access and user management</li>
                 </ul>
               </div>
             </div>

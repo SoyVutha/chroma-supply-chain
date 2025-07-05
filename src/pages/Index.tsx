@@ -1,26 +1,16 @@
 
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "@/contexts/AuthContext";
 
 const Index = () => {
   const navigate = useNavigate();
-  const { user, loading } = useAuth();
 
   const handleCustomerStoreClick = () => {
-    if (user) {
-      navigate('/customer');
-    } else {
-      navigate('/auth');
-    }
+    navigate('/auth'); // Always send customers to customer auth
   };
 
   const handleERPClick = () => {
-    if (user) {
-      navigate('/erp');
-    } else {
-      navigate('/auth');
-    }
+    navigate('/erp-auth'); // Always send staff to ERP auth
   };
 
   return (
@@ -34,46 +24,40 @@ const Index = () => {
             Your comprehensive manufacturing ERP system and premium product store
           </p>
 
-          {!loading && !user && (
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-8">
-              <p className="text-blue-800 font-medium">
-                Please sign in to access the Customer Store and ERP Dashboard
-              </p>
-              <Button 
-                onClick={() => navigate('/auth')}
-                className="mt-2"
-              >
-                Sign In / Sign Up
-              </Button>
-            </div>
-          )}
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-8">
+            <h3 className="text-lg font-semibold text-blue-900 mb-2">Choose Your Access Portal</h3>
+            <p className="text-blue-800">
+              <strong>Customers:</strong> Shop for premium manufacturing products<br/>
+              <strong>Staff:</strong> Access the ERP management system
+            </p>
+          </div>
           
           <div className="grid md:grid-cols-2 gap-8 mt-12">
             <div className="bg-white rounded-lg shadow-lg p-8">
               <h2 className="text-2xl font-bold text-gray-900 mb-4">Customer Store</h2>
               <p className="text-gray-600 mb-6">
-                Browse and purchase premium manufacturing products with secure authentication
+                Browse and purchase premium manufacturing products with secure customer authentication
               </p>
               <Button 
                 onClick={handleCustomerStoreClick}
                 className="w-full"
                 size="lg"
               >
-                {user ? 'Shop Now' : 'Sign In to Shop'}
+                Shop as Customer
               </Button>
             </div>
             
             <div className="bg-white rounded-lg shadow-lg p-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">ERP Dashboard</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">ERP System</h2>
               <p className="text-gray-600 mb-6">
-                Manage inventory, production, and customer service operations
+                Staff access to manage inventory, production, and customer service operations
               </p>
               <Button 
                 onClick={handleERPClick}
-                className="w-full"
+                className="w-full bg-green-600 hover:bg-green-700"
                 size="lg"
               >
-                {user ? 'Access ERP System' : 'Sign In for ERP'}
+                Staff Access (ERP)
               </Button>
             </div>
           </div>
