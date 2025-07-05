@@ -37,12 +37,11 @@ const Index = () => {
                 Manage inventory, production, and customer service operations
               </p>
               <Button 
-                variant="outline"
+                onClick={() => navigate('/erp')}
                 className="w-full"
                 size="lg"
-                disabled
               >
-                Coming Soon
+                Access ERP System
               </Button>
             </div>
           </div>
