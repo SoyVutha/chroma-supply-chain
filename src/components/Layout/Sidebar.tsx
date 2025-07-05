@@ -1,15 +1,16 @@
 
 import React from 'react';
-import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
 import { 
-  Factory, 
+  LayoutDashboard, 
   Package, 
   ShoppingCart, 
   Users, 
-  Settings, 
-  BarChart3,
-  Wrench,
-  Headphones
+  Settings,
+  Production,
+  Headphones,
+  ClipboardCheck,
+  BarChart3
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -19,64 +20,61 @@ interface SidebarProps {
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ activeSection, onSectionChange, userRole }) => {
-  const menuItems = {
-    inventory_manager: [
-      { id: 'dashboard', label: 'Dashboard', icon: BarChart3 },
-      { id: 'inventory', label: 'Inventory', icon: Package },
-      { id: 'products', label: 'Products', icon: Factory },
-      { id: 'orders', label: 'Orders', icon: ShoppingCart },
-    ],
-    production_worker: [
-      { id: 'dashboard', label: 'Dashboard', icon: BarChart3 },
-      { id: 'production', label: 'Production', icon: Factory },
-      { id: 'quality', label: 'Quality Control', icon: Wrench },
-      { id: 'inventory', label: 'Inventory', icon: Package },
-    ],
-    customer_service: [
-      { id: 'dashboard', label: 'Dashboard', icon: BarChart3 },
-      { id: 'customers', label: 'Customers', icon: Users },
-      { id: 'tickets', label: 'Support Tickets', icon: Headphones },
-      { id: 'orders', label: 'Orders', icon: ShoppingCart },
-    ]
+  const getMenuItems = () => {
+    const commonItems = [
+      { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
+      { id: 'settings', label: 'Settings', icon: Settings }
+    ];
+
+    const roleSpecificItems = {
+      inventory_manager: [
+        { id: 'inventory', label: 'Inventory', icon: Package },
+        { id: 'orders', label: 'Orders', icon: ShoppingCart },
+        { id: 'products', label: 'Products', icon: BarChart3 }
+      ],
+      production_worker: [
+        { id: 'production', label: 'Production', icon: Production },
+        { id: 'quality', label: 'Quality Control', icon: ClipboardCheck },
+        { id: 'inventory', label: 'View Inventory', icon: Package }
+      ],
+      customer_service: [
+        { id: 'tickets', label: 'Support Tickets', icon: Headphones },
+        { id: 'customers', label: 'Customers', icon: Users },
+        { id: 'orders', label: 'View Orders', icon: ShoppingCart }
+      ]
+    };
+
+    return [
+      commonItems[0], // Dashboard first
+      ...roleSpecificItems[userRole],
+      commonItems[1]  // Settings last
+    ];
   };
 
-  const currentMenu = menuItems[userRole];
+  const menuItems = getMenuItems();
 
   return (
-    <div className="w-64 bg-slate-900 text-white h-screen fixed left-0 top-0 overflow-y-auto">
-      <div className="p-6 border-b border-slate-700">
-        <h1 className="text-xl font-bold">ManufacturingERP</h1>
-        <p className="text-sm text-slate-400 mt-1 capitalize">{userRole.replace('_', ' ')}</p>
+    <div className="fixed left-0 top-0 h-full w-64 bg-white border-r border-gray-200 shadow-sm">
+      <div className="p-6 border-b border-gray-200">
+        <h1 className="text-2xl font-bold text-blue-600">Metaflow ERP</h1>
+        <p className="text-sm text-gray-600 capitalize mt-1">
+          {userRole.replace('_', ' ')} Portal
+        </p>
       </div>
       
-      <nav className="mt-6">
-        {currentMenu.map((item) => {
-          const Icon = item.icon;
-          return (
-            <button
-              key={item.id}
-              onClick={() => onSectionChange(item.id)}
-              className={cn(
-                "w-full flex items-center space-x-3 px-6 py-3 text-left transition-colors hover:bg-slate-800",
-                activeSection === item.id ? "bg-blue-600 hover:bg-blue-700" : ""
-              )}
-            >
-              <Icon size={20} />
-              <span>{item.label}</span>
-            </button>
-          );
-        })}
+      <nav className="p-4 space-y-2">
+        {menuItems.map((item) => (
+          <Button
+            key={item.id}
+            variant={activeSection === item.id ? 'default' : 'ghost'}
+            className="w-full justify-start gap-3"
+            onClick={() => onSectionChange(item.id)}
+          >
+            <item.icon size={18} />
+            {item.label}
+          </Button>
+        ))}
       </nav>
-      
-      <div className="absolute bottom-0 w-full p-6 border-t border-slate-700">
-        <button 
-          onClick={() => onSectionChange('settings')}
-          className="w-full flex items-center space-x-3 px-3 py-2 text-left transition-colors hover:bg-slate-800 rounded"
-        >
-          <Settings size={20} />
-          <span>Settings</span>
-        </button>
-      </div>
     </div>
   );
 };

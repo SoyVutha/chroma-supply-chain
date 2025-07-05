@@ -10,11 +10,13 @@ import { useNavigate } from 'react-router-dom';
 import CustomerHeader from '@/components/Customer/CustomerHeader';
 import ProductGrid from '@/components/Customer/ProductGrid';
 import ShoppingCartSidebar from '@/components/Customer/ShoppingCartSidebar';
+import CheckoutModal from '@/components/Customer/CheckoutModal';
 
 const Customer = () => {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
   const [cartOpen, setCartOpen] = useState(false);
+  const [checkoutOpen, setCheckoutOpen] = useState(false);
   const [cartItems, setCartItems] = useState<any[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
@@ -76,6 +78,15 @@ const Customer = () => {
 
   const getTotalPrice = () => {
     return cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
+  };
+
+  const handleCheckout = () => {
+    setCartOpen(false);
+    setCheckoutOpen(true);
+  };
+
+  const handleOrderComplete = () => {
+    setCartItems([]); // Clear cart after successful order
   };
 
   return (
@@ -140,6 +151,15 @@ const Customer = () => {
         onUpdateQuantity={updateQuantity}
         onRemoveItem={removeFromCart}
         totalPrice={getTotalPrice()}
+        onCheckout={handleCheckout}
+      />
+
+      <CheckoutModal
+        isOpen={checkoutOpen}
+        onClose={() => setCheckoutOpen(false)}
+        items={cartItems}
+        totalPrice={getTotalPrice()}
+        onOrderComplete={handleOrderComplete}
       />
     </div>
   );

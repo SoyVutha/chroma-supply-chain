@@ -1,89 +1,185 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { ShoppingCart, Eye, Package } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
+import { ShoppingCart, Search, Eye, Edit } from 'lucide-react';
 
 interface Order {
-  orderId: number;
-  customerId: number;
-  orderDate: string;
-  status: 'pending' | 'processing' | 'shipped' | 'delivered';
-  total: number;
+  id: string;
+  orderNumber: string;
+  customer: string;
   items: number;
+  total: number;
+  status: 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
+  date: string;
 }
 
-const mockOrdersData: Order[] = [
-  { orderId: 1001, customerId: 2001, orderDate: '2024-01-15', status: 'pending', total: 1250.00, items: 3 },
-  { orderId: 1002, customerId: 2002, orderDate: '2024-01-15', status: 'processing', total: 750.50, items: 2 },
-  { orderId: 1003, customerId: 2003, orderDate: '2024-01-14', status: 'shipped', total: 2100.75, items: 5 },
-  { orderId: 1004, customerId: 2004, orderDate: '2024-01-14', status: 'delivered', total: 425.00, items: 1 },
-  { orderId: 1005, customerId: 2005, orderDate: '2024-01-13', status: 'processing', total: 1875.25, items: 4 },
+const mockOrders: Order[] = [
+  {
+    id: '1',
+    orderNumber: 'ORD-001',
+    customer: 'Acme Manufacturing Corp',
+    items: 3,
+    total: 245.99,
+    status: 'processing',
+    date: '2024-01-15'
+  },
+  {
+    id: '2',
+    orderNumber: 'ORD-002',
+    customer: 'Global Tech Solutions',
+    items: 1,
+    total: 125.00,
+    status: 'shipped',
+    date: '2024-01-14'
+  },
+  {
+    id: '3',
+    orderNumber: 'ORD-003',
+    customer: 'Midwest Assembly LLC',
+    items: 5,
+    total: 387.50,
+    status: 'pending',
+    date: '2024-01-13'
+  },
+  {
+    id: '4',
+    orderNumber: 'ORD-004',
+    customer: 'Tech Innovators Inc',
+    items: 2,
+    total: 89.98,
+    status: 'delivered',
+    date: '2024-01-12'
+  }
 ];
 
 const OrdersTable: React.FC = () => {
-  const getStatusBadge = (status: string) => {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [statusFilter, setStatusFilter] = useState<'all' | Order['status']>('all');
+
+  const filteredOrders = mockOrders.filter(order => {
+    const matchesSearch = order.orderNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         order.customer.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesStatus = statusFilter === 'all' || order.status === statusFilter;
+    return matchesSearch && matchesStatus;
+  });
+
+  const getStatusBadge = (status: Order['status']) => {
     const statusConfig = {
-      pending: { variant: 'secondary' as const, label: 'Pending' },
-      processing: { variant: 'default' as const, label: 'Processing' },
-      shipped: { variant: 'outline' as const, label: 'Shipped' },
-      delivered: { variant: 'default' as const, label: 'Delivered' },
+      pending: { variant: 'secondary' as const, label: 'Pending', class: 'bg-yellow-100 text-yellow-800' },
+      processing: { variant: 'default' as const, label: 'Processing', class: 'bg-blue-100 text-blue-800' },
+      shipped: { variant: 'secondary' as const, label: 'Shipped', class: 'bg-purple-100 text-purple-800' },
+      delivered: { variant: 'default' as const, label: 'Delivered', class: 'bg-green-100 text-green-800' },
+      cancelled: { variant: 'destructive' as const, label: 'Cancelled', class: '' }
     };
-    
-    const config = statusConfig[status as keyof typeof statusConfig];
-    return <Badge variant={config.variant}>{config.label}</Badge>;
+
+    const config = statusConfig[status];
+    return (
+      <Badge variant={config.variant} className={config.class}>
+        {config.label}
+      </Badge>
+    );
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <ShoppingCart size={20} />
-          Order Management
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="overflow-x-auto">
-          <table className="w-full border-collapse">
-            <thead>
-              <tr className="border-b">
-                <th className="text-left p-3 font-medium">Order ID</th>
-                <th className="text-left p-3 font-medium">Customer ID</th>
-                <th className="text-left p-3 font-medium">Order Date</th>
-                <th className="text-left p-3 font-medium">Items</th>
-                <th className="text-left p-3 font-medium">Total</th>
-                <th className="text-left p-3 font-medium">Status</th>
-                <th className="text-left p-3 font-medium">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {mockOrdersData.map((order) => (
-                <tr key={order.orderId} className="border-b hover:bg-gray-50 transition-colors">
-                  <td className="p-3 font-mono text-sm">#{order.orderId}</td>
-                  <td className="p-3 font-mono text-sm">{order.customerId}</td>
-                  <td className="p-3 text-sm text-gray-600">{order.orderDate}</td>
-                  <td className="p-3">
-                    <div className="flex items-center gap-1">
-                      <Package size={14} className="text-gray-500" />
-                      {order.items}
-                    </div>
-                  </td>
-                  <td className="p-3 font-semibold">${order.total.toFixed(2)}</td>
-                  <td className="p-3">{getStatusBadge(order.status)}</td>
-                  <td className="p-3">
-                    <Button variant="outline" size="sm" className="flex items-center gap-1">
-                      <Eye size={14} />
-                      View
-                    </Button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex justify-between items-center">
+        <div>
+          <h2 className="text-2xl font-bold">Order Management</h2>
+          <p className="text-gray-600">Track and manage customer orders</p>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+
+      {/* Filters */}
+      <div className="flex gap-4 items-center">
+        <div className="relative flex-1 max-w-md">
+          <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+          <Input
+            placeholder="Search orders..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="pl-10"
+          />
+        </div>
+        <div className="flex gap-2">
+          <Button
+            variant={statusFilter === 'all' ? 'default' : 'outline'}
+            onClick={() => setStatusFilter('all')}
+            size="sm"
+          >
+            All Orders
+          </Button>
+          <Button
+            variant={statusFilter === 'pending' ? 'default' : 'outline'}
+            onClick={() => setStatusFilter('pending')}
+            size="sm"
+          >
+            Pending
+          </Button>
+          <Button
+            variant={statusFilter === 'processing' ? 'default' : 'outline'}
+            onClick={() => setStatusFilter('processing')}
+            size="sm"
+          >
+            Processing
+          </Button>
+        </div>
+      </div>
+
+      {/* Orders Table */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <ShoppingCart size={20} />
+            Customer Orders ({filteredOrders.length})
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b">
+                  <th className="text-left p-2">Order #</th>
+                  <th className="text-left p-2">Customer</th>
+                  <th className="text-left p-2">Items</th>
+                  <th className="text-left p-2">Total</th>
+                  <th className="text-left p-2">Status</th>
+                  <th className="text-left p-2">Date</th>
+                  <th className="text-left p-2">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredOrders.map((order) => (
+                  <tr key={order.id} className="border-b hover:bg-gray-50">
+                    <td className="p-2 font-mono font-medium">{order.orderNumber}</td>
+                    <td className="p-2">{order.customer}</td>
+                    <td className="p-2">{order.items} items</td>
+                    <td className="p-2 font-medium">${order.total.toFixed(2)}</td>
+                    <td className="p-2">{getStatusBadge(order.status)}</td>
+                    <td className="p-2 text-gray-600">{order.date}</td>
+                    <td className="p-2">
+                      <div className="flex gap-1">
+                        <Button variant="ghost" size="sm" className="flex items-center gap-1">
+                          <Eye size={14} />
+                          View
+                        </Button>
+                        <Button variant="ghost" size="sm" className="flex items-center gap-1">
+                          <Edit size={14} />
+                          Update
+                        </Button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
   );
 };
 

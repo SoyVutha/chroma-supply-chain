@@ -19,6 +19,7 @@ interface ShoppingCartSidebarProps {
   onUpdateQuantity: (productId: string, quantity: number) => void;
   onRemoveItem: (productId: string) => void;
   totalPrice: number;
+  onCheckout: () => void;
 }
 
 const ShoppingCartSidebar: React.FC<ShoppingCartSidebarProps> = ({
@@ -27,7 +28,8 @@ const ShoppingCartSidebar: React.FC<ShoppingCartSidebarProps> = ({
   items,
   onUpdateQuantity,
   onRemoveItem,
-  totalPrice
+  totalPrice,
+  onCheckout
 }) => {
   if (!isOpen) return null;
 
@@ -115,7 +117,7 @@ const ShoppingCartSidebar: React.FC<ShoppingCartSidebarProps> = ({
               <span>Total:</span>
               <span className="text-green-600">${totalPrice.toFixed(2)}</span>
             </div>
-            <Button className="w-full" size="lg">
+            <Button className="w-full" size="lg" onClick={onCheckout}>
               Proceed to Checkout
             </Button>
             <Button variant="outline" className="w-full" onClick={onClose}>

@@ -32,87 +32,96 @@ const ERP = () => {
       case 'dashboard':
         return (
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-8">Dashboard</h1>
+            <h1 className="text-3xl font-bold text-gray-900 mb-8">ERP Dashboard</h1>
             <DashboardStats userRole={userRole} />
           </div>
         );
       case 'inventory':
-        return (
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-8">Inventory Management</h1>
-            <InventoryTable />
-          </div>
-        );
+        return <InventoryTable />;
       case 'orders':
-        return (
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-8">Order Management</h1>
-            <OrdersTable />
-          </div>
-        );
+        return <OrdersTable />;
       case 'production':
-        return (
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-8">Production Schedule</h1>
-            <ProductionSchedule />
-          </div>
-        );
+        return <ProductionSchedule />;
       case 'customers':
         return (
           <div>
             <h1 className="text-3xl font-bold text-gray-900 mb-8">Customer Management</h1>
-            <p className="text-gray-600">Customer management features coming soon...</p>
+            <div className="bg-white rounded-lg shadow p-8 text-center">
+              <p className="text-gray-600 mb-4">Customer management features are being developed.</p>
+              <p className="text-sm text-gray-500">This section will include customer profiles, communication history, and account management tools.</p>
+            </div>
           </div>
         );
       case 'tickets':
         return (
           <div>
             <h1 className="text-3xl font-bold text-gray-900 mb-8">Support Tickets</h1>
-            <p className="text-gray-600">Support ticket management coming soon...</p>
+            <div className="bg-white rounded-lg shadow p-8 text-center">
+              <p className="text-gray-600 mb-4">Support ticket management system coming soon.</p>
+              <p className="text-sm text-gray-500">Track and resolve customer support requests efficiently.</p>
+            </div>
           </div>
         );
       case 'quality':
         return (
           <div>
             <h1 className="text-3xl font-bold text-gray-900 mb-8">Quality Control</h1>
-            <p className="text-gray-600">Quality control features coming soon...</p>
+            <div className="bg-white rounded-lg shadow p-8 text-center">
+              <p className="text-gray-600 mb-4">Quality control management features in development.</p>
+              <p className="text-sm text-gray-500">Monitor product quality, inspection schedules, and compliance metrics.</p>
+            </div>
           </div>
         );
       case 'products':
         return (
           <div>
             <h1 className="text-3xl font-bold text-gray-900 mb-8">Product Management</h1>
-            <p className="text-gray-600">Product management features coming soon...</p>
+            <div className="bg-white rounded-lg shadow p-8 text-center">
+              <p className="text-gray-600 mb-4">Product catalog management tools coming soon.</p>
+              <p className="text-sm text-gray-500">Manage product specifications, pricing, and availability.</p>
+            </div>
           </div>
         );
       case 'settings':
         return (
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-8">Settings</h1>
+            <h1 className="text-3xl font-bold text-gray-900 mb-8">ERP Settings</h1>
             <div className="bg-white rounded-lg shadow p-6">
-              <h2 className="text-xl font-semibold mb-4">User Role</h2>
-              <p className="text-gray-600 mb-4">Current role: <span className="font-medium capitalize">{userRole.replace('_', ' ')}</span></p>
+              <h2 className="text-xl font-semibold mb-4">User Role Simulation</h2>
+              <p className="text-gray-600 mb-4">
+                Switch between different user roles to see how the ERP system adapts to different permissions and workflows.
+              </p>
+              <p className="text-sm text-gray-500 mb-4">Current role: <span className="font-medium capitalize">{userRole.replace('_', ' ')}</span></p>
               <div className="space-y-2">
                 <Button 
                   variant={userRole === 'inventory_manager' ? 'default' : 'outline'}
                   onClick={() => setUserRole('inventory_manager')}
-                  className="mr-2"
+                  className="mr-2 mb-2"
                 >
                   Inventory Manager
                 </Button>
                 <Button 
                   variant={userRole === 'production_worker' ? 'default' : 'outline'}
                   onClick={() => setUserRole('production_worker')}
-                  className="mr-2"
+                  className="mr-2 mb-2"
                 >
                   Production Worker
                 </Button>
                 <Button 
                   variant={userRole === 'customer_service' ? 'default' : 'outline'}
                   onClick={() => setUserRole('customer_service')}
+                  className="mb-2"
                 >
                   Customer Service
                 </Button>
+              </div>
+              <div className="mt-6 p-4 bg-blue-50 rounded-lg">
+                <h3 className="font-medium text-blue-900 mb-2">Role Descriptions:</h3>
+                <ul className="text-sm text-blue-800 space-y-1">
+                  <li><strong>Inventory Manager:</strong> Full access to inventory, orders, and product management</li>
+                  <li><strong>Production Worker:</strong> Focus on production schedules, quality control, and inventory viewing</li>
+                  <li><strong>Customer Service:</strong> Access to support tickets, customer management, and order viewing</li>
+                </ul>
               </div>
             </div>
           </div>
@@ -125,7 +134,7 @@ const ERP = () => {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="text-lg">Loading...</div>
+        <div className="text-lg">Loading ERP System...</div>
       </div>
     );
   }
@@ -147,10 +156,10 @@ const ERP = () => {
           <div className="flex justify-between items-center">
             <div>
               <h2 className="text-lg font-semibold text-gray-900">
-                Welcome, {user.email}
+                Welcome to Metaflow ERP, {user.user_metadata?.name || user.email?.split('@')[0]}
               </h2>
               <p className="text-sm text-gray-600 capitalize">
-                {userRole.replace('_', ' ')} Dashboard
+                {userRole.replace('_', ' ')} Dashboard - Manage Operations Efficiently
               </p>
             </div>
             <Button 
