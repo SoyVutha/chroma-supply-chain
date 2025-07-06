@@ -7,10 +7,6 @@ import DashboardStats from '@/components/Dashboard/DashboardStats';
 import InventoryTable from '@/components/Inventory/InventoryTable';
 import OrdersTable from '@/components/Orders/OrdersTable';
 import ProductionSchedule from '@/components/Production/ProductionSchedule';
-import ProductForm from '@/components/Products/ProductForm';
-import ProductionTaskForm from '@/components/Production/ProductionTaskForm';
-import CustomerInteractionForm from '@/components/CustomerService/CustomerInteractionForm';
-import CustomersTable from '@/components/Customers/CustomersTable';
 import { Button } from '@/components/ui/button';
 import { LogOut } from 'lucide-react';
 
@@ -40,53 +36,25 @@ const ERP = () => {
           </div>
         );
       case 'inventory':
-        return (
-          <div className="space-y-6">
-            <InventoryTable />
-            {userRole === 'inventory_manager' && (
-              <div>
-                <h2 className="text-2xl font-bold text-gray-900 mb-4">Add New Product</h2>
-                <ProductForm />
-              </div>
-            )}
-          </div>
-        );
+        return <InventoryTable />;
       case 'orders':
         return <OrdersTable />;
       case 'production':
-        return (
-          <div className="space-y-6">
-            <ProductionSchedule />
-            {userRole === 'production_worker' && (
-              <div>
-                <h2 className="text-2xl font-bold text-gray-900 mb-4">Create Production Task</h2>
-                <ProductionTaskForm />
-              </div>
-            )}
-          </div>
-        );
+        return <ProductionSchedule />;
       case 'customers':
         return (
-          <div className="space-y-6">
-            <CustomersTable />
-            {userRole === 'customer_service' && (
-              <div>
-                <h2 className="text-2xl font-bold text-gray-900 mb-4">Log Customer Interaction</h2>
-                <CustomerInteractionForm />
-              </div>
-            )}
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900 mb-8">Customer Management</h1>
+            <div className="bg-white rounded-lg shadow p-8 text-center">
+              <p className="text-gray-600 mb-4">Customer management features are being developed.</p>
+              <p className="text-sm text-gray-500">This section will include customer profiles, communication history, and account management tools.</p>
+            </div>
           </div>
         );
       case 'tickets':
         return (
-          <div className="space-y-6">
+          <div>
             <h1 className="text-3xl font-bold text-gray-900 mb-8">Support Tickets</h1>
-            {userRole === 'customer_service' && (
-              <div>
-                <h2 className="text-2xl font-bold text-gray-900 mb-4">Log Customer Interaction</h2>
-                <CustomerInteractionForm />
-              </div>
-            )}
             <div className="bg-white rounded-lg shadow p-8 text-center">
               <p className="text-gray-600 mb-4">Support ticket management system coming soon.</p>
               <p className="text-sm text-gray-500">Track and resolve customer support requests efficiently.</p>
@@ -105,11 +73,8 @@ const ERP = () => {
         );
       case 'products':
         return (
-          <div className="space-y-6">
+          <div>
             <h1 className="text-3xl font-bold text-gray-900 mb-8">Product Management</h1>
-            {userRole === 'inventory_manager' && (
-              <ProductForm />
-            )}
             <div className="bg-white rounded-lg shadow p-8 text-center">
               <p className="text-gray-600 mb-4">Product catalog management tools coming soon.</p>
               <p className="text-sm text-gray-500">Manage product specifications, pricing, and availability.</p>
@@ -133,6 +98,7 @@ const ERP = () => {
                   <li><strong>Inventory Manager:</strong> Full access to inventory, orders, and product management</li>
                   <li><strong>Production Worker:</strong> Focus on production schedules, quality control, and inventory viewing</li>
                   <li><strong>Customer Service:</strong> Access to support tickets, customer management, and order viewing</li>
+                  <li><strong>Admin:</strong> Full system access and user management</li>
                 </ul>
               </div>
             </div>

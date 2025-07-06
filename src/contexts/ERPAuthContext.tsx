@@ -4,17 +4,17 @@ import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 
 interface ERPUser extends User {
-  role?: 'inventory_manager' | 'production_worker' | 'customer_service';
+  role?: 'inventory_manager' | 'production_worker' | 'customer_service' | 'admin';
 }
 
 interface ERPAuthContextType {
   user: ERPUser | null;
   session: Session | null;
   loading: boolean;
-  userRole: 'inventory_manager' | 'production_worker' | 'customer_service';
+  userRole: 'inventory_manager' | 'production_worker' | 'customer_service' | 'admin';
   signIn: (email: string, password: string) => Promise<{ error: any }>;
   signOut: () => Promise<void>;
-  setUserRole: (role: 'inventory_manager' | 'production_worker' | 'customer_service') => void;
+  setUserRole: (role: 'inventory_manager' | 'production_worker' | 'customer_service' | 'admin') => void;
 }
 
 const ERPAuthContext = createContext<ERPAuthContextType | undefined>(undefined);
@@ -31,7 +31,7 @@ export const ERPAuthProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const [user, setUser] = useState<ERPUser | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
-  const [userRole, setUserRole] = useState<'inventory_manager' | 'production_worker' | 'customer_service'>('inventory_manager');
+  const [userRole, setUserRole] = useState<'inventory_manager' | 'production_worker' | 'customer_service' | 'admin'>('inventory_manager');
 
   useEffect(() => {
     // Set up auth state listener
