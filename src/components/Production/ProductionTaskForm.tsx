@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Textarea } from '@/components/ui/textarea';
 import { Factory, Plus } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -21,6 +22,7 @@ const ProductionTaskForm: React.FC = () => {
     product_id: '',
     quantity_produced: '',
     quality_checked: true,
+    notes: ''
   });
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
@@ -72,6 +74,7 @@ const ProductionTaskForm: React.FC = () => {
         product_id: '',
         quantity_produced: '',
         quality_checked: true,
+        notes: ''
       });
     } catch (error: any) {
       toast({

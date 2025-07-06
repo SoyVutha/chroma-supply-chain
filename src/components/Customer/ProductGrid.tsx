@@ -1,19 +1,90 @@
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Star, ShoppingCart } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
 
 interface Product {
   id: string;
   name: string;
-  description: string | null;
   price: number;
-  stock_quantity: number;
-  category?: string;
+  category: string;
+  rating: number;
+  reviews: number;
+  image: string;
+  description: string;
+  inStock: boolean;
 }
+
+const mockProducts: Product[] = [
+  {
+    id: '1',
+    name: 'Steel Widget Type A',
+    price: 89.99,
+    category: 'steel',
+    rating: 4.5,
+    reviews: 24,
+    image: '/placeholder.svg',
+    description: 'High-grade steel widget perfect for industrial applications',
+    inStock: true
+  },
+  {
+    id: '2',
+    name: 'Aluminum Component B',
+    price: 129.99,
+    category: 'aluminum',
+    rating: 4.8,
+    reviews: 18,
+    image: '/placeholder.svg',
+    description: 'Lightweight aluminum component with superior durability',
+    inStock: true
+  },
+  {
+    id: '3',
+    name: 'Plastic Assembly C',
+    price: 45.99,
+    category: 'plastic',
+    rating: 4.2,
+    reviews: 35,
+    image: '/placeholder.svg',
+    description: 'Precision-molded plastic assembly for various applications',
+    inStock: false
+  },
+  {
+    id: '4',
+    name: 'Electronic Module D',
+    price: 199.99,
+    category: 'electronic',
+    rating: 4.9,
+    reviews: 12,
+    image: '/placeholder.svg',
+    description: 'Advanced electronic module with integrated circuitry',
+    inStock: true
+  },
+  {
+    id: '5',
+    name: 'Steel Bracket Set',
+    price: 34.99,
+    category: 'steel',
+    rating: 4.3,
+    reviews: 28,
+    image: '/placeholder.svg',
+    description: 'Heavy-duty steel brackets for mounting applications',
+    inStock: true
+  },
+  {
+    id: '6',
+    name: 'Aluminum Heat Sink',
+    price: 75.99,
+    category: 'aluminum',
+    rating: 4.6,
+    reviews: 16,
+    image: '/placeholder.svg',
+    description: 'Efficient aluminum heat sink for thermal management',
+    inStock: true
+  }
+];
 
 interface ProductGridProps {
   searchQuery: string;
@@ -21,125 +92,70 @@ interface ProductGridProps {
   onAddToCart: (product: Product) => void;
 }
 
-const ProductGrid: React.FC<ProductGridProps> = ({
-  searchQuery,
-  selectedCategory,
-  onAddToCart,
-}) => {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    fetchProducts();
-  }, []);
-
-  const fetchProducts = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('products')
-        .select('*')
-        .order('name');
-
-      if (error) throw error;
-      
-      // Transform the data to match our interface
-      const transformedProducts = (data || []).map(product => ({
-        ...product,
-        category: getCategoryFromName(product.name),
-      }));
-      
-      setProducts(transformedProducts);
-    } catch (error) {
-      console.error('Error fetching products:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Helper function to determine category from product name
-  const getCategoryFromName = (name: string): string => {
-    const lowerName = name.toLowerCase();
-    if (lowerName.includes('steel')) return 'steel';
-    if (lowerName.includes('aluminum')) return 'aluminum';
-    if (lowerName.includes('plastic')) return 'plastic';
-    if (lowerName.includes('electronic')) return 'electronic';
-    return 'general';
-  };
-
-  const filteredProducts = products.filter(product => {
+const ProductGrid: React.FC<ProductGridProps> = ({ searchQuery, selectedCategory, onAddToCart }) => {
+  const filteredProducts = mockProducts.filter(product => {
     const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         (product.description && product.description.toLowerCase().includes(searchQuery.toLowerCase()));
+                         product.description.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesCategory = selectedCategory === 'all' || product.category === selectedCategory;
     return matchesSearch && matchesCategory;
   });
 
-  if (loading) {
-    return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {[...Array(6)].map((_, i) => (
-          <Card key={i} className="animate-pulse">
-            <CardHeader>
-              <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-              <div className="h-3 bg-gray-200 rounded w-1/2"></div>
-            </CardHeader>
-            <CardContent>
-              <div className="h-20 bg-gray-200 rounded mb-4"></div>
-              <div className="h-8 bg-gray-200 rounded"></div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-    );
-  }
+  const renderStars = (rating: number) => {
+    return Array.from({ length: 5 }, (_, i) => (
+      <Star
+        key={i}
+        size={14}
+        className={i < Math.floor(rating) ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}
+      />
+    ));
+  };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
       {filteredProducts.map((product) => (
         <Card key={product.id} className="overflow-hidden hover:shadow-lg transition-shadow">
-          <CardHeader>
-            <div className="flex justify-between items-start">
-              <CardTitle className="text-lg">{product.name}</CardTitle>
-              <Badge variant="outline" className="capitalize">
-                {product.category}
+          <div className="relative">
+            <img
+              src={product.image}
+              alt={product.name}
+              className="w-full h-48 object-cover"
+            />
+            {!product.inStock && (
+              <Badge variant="destructive" className="absolute top-2 right-2">
+                Out of Stock
               </Badge>
-            </div>
+            )}
+          </div>
+          
+          <CardHeader className="pb-2">
+            <CardTitle className="text-lg">{product.name}</CardTitle>
             <div className="flex items-center gap-2">
               <div className="flex items-center">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} size={16} className="fill-yellow-400 text-yellow-400" />
-                ))}
-                <span className="text-sm text-gray-600 ml-1">(4.8)</span>
+                {renderStars(product.rating)}
               </div>
+              <span className="text-sm text-gray-600">({product.reviews})</span>
             </div>
           </CardHeader>
+          
           <CardContent>
-            <p className="text-gray-600 mb-4 line-clamp-3">
-              {product.description || 'High-quality manufacturing component designed for industrial applications.'}
-            </p>
-            <div className="flex justify-between items-center mb-4">
-              <span className="text-2xl font-bold text-blue-600">
-                ${product.price.toFixed(2)}
+            <p className="text-gray-600 text-sm mb-4">{product.description}</p>
+            <div className="flex items-center justify-between">
+              <span className="text-2xl font-bold text-green-600">
+                ${product.price}
               </span>
-              <Badge variant={product.stock_quantity > 0 ? 'default' : 'destructive'}>
-                {product.stock_quantity > 0 ? `${product.stock_quantity} in stock` : 'Out of stock'}
-              </Badge>
+              <Button
+                onClick={() => onAddToCart(product)}
+                disabled={!product.inStock}
+                className="flex items-center gap-2"
+                size="sm"
+              >
+                <ShoppingCart size={16} />
+                Add to Cart
+              </Button>
             </div>
-            <Button 
-              onClick={() => onAddToCart(product)} 
-              className="w-full"
-              disabled={product.stock_quantity === 0}
-            >
-              <ShoppingCart size={16} className="mr-2" />
-              Add to Cart
-            </Button>
           </CardContent>
         </Card>
       ))}
-      {filteredProducts.length === 0 && !loading && (
-        <div className="col-span-full text-center py-12">
-          <p className="text-gray-500 text-lg">No products found matching your criteria.</p>
-        </div>
-      )}
     </div>
   );
 };
