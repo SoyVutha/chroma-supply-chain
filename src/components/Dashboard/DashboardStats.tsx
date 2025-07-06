@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Package, Users, AlertTriangle, CheckCircle } from 'lucide-react';
 
 interface DashboardStatsProps {
-  userRole: 'inventory_manager' | 'production_worker' | 'customer_service' | 'admin';
+  userRole: 'inventory_manager' | 'production_worker' | 'customer_service';
 }
 
 const DashboardStats: React.FC<DashboardStatsProps> = ({ userRole }) => {
@@ -27,12 +27,6 @@ const DashboardStats: React.FC<DashboardStatsProps> = ({ userRole }) => {
       { title: 'Resolved Today', value: '7', icon: CheckCircle, color: 'text-green-600' },
       { title: 'High Priority', value: '3', icon: AlertTriangle, color: 'text-red-600' },
       { title: 'Customer Satisfaction', value: '4.8/5', icon: Users, color: 'text-blue-600' }
-    ],
-    admin: [
-      { title: 'Total Users', value: '156', icon: Users, color: 'text-blue-600' },
-      { title: 'System Health', value: '98%', icon: CheckCircle, color: 'text-green-600' },
-      { title: 'Critical Alerts', value: '1', icon: AlertTriangle, color: 'text-red-600' },
-      { title: 'Monthly Revenue', value: '$45.2k', icon: Package, color: 'text-green-600' }
     ]
   };
 

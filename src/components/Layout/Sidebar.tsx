@@ -10,14 +10,13 @@ import {
   Factory,
   Headphones,
   ClipboardCheck,
-  BarChart3,
-  Shield
+  BarChart3
 } from 'lucide-react';
 
 interface SidebarProps {
   activeSection: string;
   onSectionChange: (section: string) => void;
-  userRole: 'inventory_manager' | 'production_worker' | 'customer_service' | 'admin';
+  userRole: 'inventory_manager' | 'production_worker' | 'customer_service';
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ activeSection, onSectionChange, userRole }) => {
@@ -42,15 +41,6 @@ const Sidebar: React.FC<SidebarProps> = ({ activeSection, onSectionChange, userR
         { id: 'tickets', label: 'Support Tickets', icon: Headphones },
         { id: 'customers', label: 'Customers', icon: Users },
         { id: 'orders', label: 'View Orders', icon: ShoppingCart }
-      ],
-      admin: [
-        { id: 'inventory', label: 'Inventory', icon: Package },
-        { id: 'orders', label: 'Orders', icon: ShoppingCart },
-        { id: 'production', label: 'Production', icon: Factory },
-        { id: 'tickets', label: 'Support Tickets', icon: Headphones },
-        { id: 'customers', label: 'Customers', icon: Users },
-        { id: 'products', label: 'Products', icon: BarChart3 },
-        { id: 'quality', label: 'Quality Control', icon: ClipboardCheck }
       ]
     };
 
