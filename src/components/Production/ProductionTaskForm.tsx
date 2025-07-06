@@ -20,11 +20,9 @@ const ProductionTaskForm: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [formData, setFormData] = useState({
     product_id: '',
-    task_type: '',
-    quantity_target: '',
-    priority: 'medium',
-    notes: '',
-    due_date: ''
+    quantity_produced: '',
+    quality_checked: true,
+    notes: ''
   });
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
@@ -55,37 +53,33 @@ const ProductionTaskForm: React.FC = () => {
     setLoading(true);
 
     try {
+      // Create a production log entry
       const { error } = await supabase
-        .from('production_tasks')
+        .from('production_logs')
         .insert([{
           product_id: formData.product_id,
           worker_id: user.id,
-          task_type: formData.task_type,
-          quantity_target: parseInt(formData.quantity_target),
-          priority: formData.priority,
-          notes: formData.notes || null,
-          due_date: formData.due_date ? new Date(formData.due_date).toISOString() : null
+          quantity_produced: parseInt(formData.quantity_produced),
+          quality_checked: formData.quality_checked
         }]);
 
       if (error) throw error;
 
       toast({
         title: "Success",
-        description: "Production task created successfully!",
+        description: "Production task logged successfully!",
       });
 
       setFormData({
         product_id: '',
-        task_type: '',
-        quantity_target: '',
-        priority: 'medium',
-        notes: '',
-        due_date: ''
+        quantity_produced: '',
+        quality_checked: true,
+        notes: ''
       });
     } catch (error: any) {
       toast({
         title: "Error",
-        description: error.message || "Failed to create production task",
+        description: error.message || "Failed to log production task",
         variant: "destructive",
       });
     } finally {
@@ -93,7 +87,7 @@ const ProductionTaskForm: React.FC = () => {
     }
   };
 
-  const handleChange = (name: string, value: string) => {
+  const handleChange = (name: string, value: string | boolean) => {
     setFormData({
       ...formData,
       [name]: value
@@ -105,99 +99,55 @@ const ProductionTaskForm: React.FC = () => {
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Factory size={20} />
-          Create Production Task
+          Log Production Task
         </CardTitle>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="product_id">Product</Label>
-              <Select value={formData.product_id} onValueChange={(value) => handleChange('product_id', value)} required>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select a product" />
-                </SelectTrigger>
-                <SelectContent>
-                  {products.map((product) => (
-                    <SelectItem key={product.id} value={product.id}>
-                      {product.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div>
-              <Label htmlFor="task_type">Task Type</Label>
-              <Select value={formData.task_type} onValueChange={(value) => handleChange('task_type', value)} required>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select task type" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="manufacturing">Manufacturing</SelectItem>
-                  <SelectItem value="quality_check">Quality Check</SelectItem>
-                  <SelectItem value="assembly">Assembly</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="quantity_target">Target Quantity</Label>
-              <Input
-                id="quantity_target"
-                name="quantity_target"
-                type="number"
-                min="1"
-                value={formData.quantity_target}
-                onChange={(e) => handleChange('quantity_target', e.target.value)}
-                required
-                placeholder="Enter target quantity"
-              />
-            </div>
-
-            <div>
-              <Label htmlFor="priority">Priority</Label>
-              <Select value={formData.priority} onValueChange={(value) => handleChange('priority', value)}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="low">Low</SelectItem>
-                  <SelectItem value="medium">Medium</SelectItem>
-                  <SelectItem value="high">High</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+          <div>
+            <Label htmlFor="product_id">Product</Label>
+            <Select value={formData.product_id} onValueChange={(value) => handleChange('product_id', value)} required>
+              <SelectTrigger>
+                <SelectValue placeholder="Select a product" />
+              </SelectTrigger>
+              <SelectContent>
+                {products.map((product) => (
+                  <SelectItem key={product.id} value={product.id}>
+                    {product.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
           <div>
-            <Label htmlFor="due_date">Due Date</Label>
+            <Label htmlFor="quantity_produced">Quantity Produced</Label>
             <Input
-              id="due_date"
-              name="due_date"
-              type="datetime-local"
-              value={formData.due_date}
-              onChange={(e) => handleChange('due_date', e.target.value)}
+              id="quantity_produced"
+              name="quantity_produced"
+              type="number"
+              min="1"
+              value={formData.quantity_produced}
+              onChange={(e) => handleChange('quantity_produced', e.target.value)}
+              required
+              placeholder="Enter quantity produced"
             />
           </div>
 
-          <div>
-            <Label htmlFor="notes">Notes</Label>
-            <Textarea
-              id="notes"
-              name="notes"
-              value={formData.notes}
-              onChange={(e) => handleChange('notes', e.target.value)}
-              placeholder="Enter any additional notes"
-              rows={3}
+          <div className="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              id="quality_checked"
+              checked={formData.quality_checked}
+              onChange={(e) => handleChange('quality_checked', e.target.checked)}
+              className="rounded border-gray-300"
             />
+            <Label htmlFor="quality_checked">Quality Check Passed</Label>
           </div>
 
           <Button type="submit" disabled={loading} className="w-full">
             <Plus size={16} className="mr-2" />
-            {loading ? 'Creating...' : 'Create Production Task'}
+            {loading ? 'Logging...' : 'Log Production Task'}
           </Button>
         </form>
       </CardContent>

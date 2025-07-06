@@ -21,9 +21,7 @@ const CustomerInteractionForm: React.FC = () => {
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [formData, setFormData] = useState({
     customer_id: '',
-    interaction_type: '',
-    subject: '',
-    description: '',
+    issue: '',
     priority: 'medium'
   });
   const [loading, setLoading] = useState(false);
@@ -55,15 +53,13 @@ const CustomerInteractionForm: React.FC = () => {
     setLoading(true);
 
     try {
+      // Create a support ticket for the customer interaction
       const { error } = await supabase
-        .from('customer_interactions')
+        .from('support_tickets')
         .insert([{
           customer_id: formData.customer_id,
-          staff_id: user.id,
-          interaction_type: formData.interaction_type,
-          subject: formData.subject,
-          description: formData.description,
-          priority: formData.priority
+          issue: `${formData.priority.toUpperCase()} PRIORITY: ${formData.issue}`,
+          status: 'Open'
         }]);
 
       if (error) throw error;
@@ -75,9 +71,7 @@ const CustomerInteractionForm: React.FC = () => {
 
       setFormData({
         customer_id: '',
-        interaction_type: '',
-        subject: '',
-        description: '',
+        issue: '',
         priority: 'medium'
       });
     } catch (error: any) {
@@ -108,76 +102,45 @@ const CustomerInteractionForm: React.FC = () => {
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="customer_id">Customer</Label>
-              <Select value={formData.customer_id} onValueChange={(value) => handleChange('customer_id', value)} required>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select a customer" />
-                </SelectTrigger>
-                <SelectContent>
-                  {customers.map((customer) => (
-                    <SelectItem key={customer.id} value={customer.id}>
-                      {customer.name} - {customer.email}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div>
-              <Label htmlFor="interaction_type">Interaction Type</Label>
-              <Select value={formData.interaction_type} onValueChange={(value) => handleChange('interaction_type', value)} required>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select interaction type" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="support_call">Support Call</SelectItem>
-                  <SelectItem value="email">Email</SelectItem>
-                  <SelectItem value="chat">Chat</SelectItem>
-                  <SelectItem value="order_inquiry">Order Inquiry</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="subject">Subject</Label>
-              <Input
-                id="subject"
-                name="subject"
-                value={formData.subject}
-                onChange={(e) => handleChange('subject', e.target.value)}
-                required
-                placeholder="Enter interaction subject"
-              />
-            </div>
-
-            <div>
-              <Label htmlFor="priority">Priority</Label>
-              <Select value={formData.priority} onValueChange={(value) => handleChange('priority', value)}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="low">Low</SelectItem>
-                  <SelectItem value="medium">Medium</SelectItem>
-                  <SelectItem value="high">High</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+          <div>
+            <Label htmlFor="customer_id">Customer</Label>
+            <Select value={formData.customer_id} onValueChange={(value) => handleChange('customer_id', value)} required>
+              <SelectTrigger>
+                <SelectValue placeholder="Select a customer" />
+              </SelectTrigger>
+              <SelectContent>
+                {customers.map((customer) => (
+                  <SelectItem key={customer.id} value={customer.id}>
+                    {customer.name} - {customer.email}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
           <div>
-            <Label htmlFor="description">Description</Label>
+            <Label htmlFor="priority">Priority</Label>
+            <Select value={formData.priority} onValueChange={(value) => handleChange('priority', value)}>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="low">Low</SelectItem>
+                <SelectItem value="medium">Medium</SelectItem>
+                <SelectItem value="high">High</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div>
+            <Label htmlFor="issue">Issue Description</Label>
             <Textarea
-              id="description"
-              name="description"
-              value={formData.description}
-              onChange={(e) => handleChange('description', e.target.value)}
+              id="issue"
+              name="issue"
+              value={formData.issue}
+              onChange={(e) => handleChange('issue', e.target.value)}
               required
-              placeholder="Describe the customer interaction"
+              placeholder="Describe the customer issue or interaction"
               rows={4}
             />
           </div>
