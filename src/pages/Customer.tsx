@@ -156,8 +156,7 @@ const Customer = () => {
       <CheckoutModal
         isOpen={checkoutOpen}
         onClose={() => setCheckoutOpen(false)}
-        items={cartItems}
-        totalPrice={getTotalPrice()}
+        cartItems={cartItems}
         onOrderComplete={handleOrderComplete}
       />
     </div>
