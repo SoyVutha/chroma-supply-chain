@@ -7,6 +7,7 @@ import DashboardStats from '@/components/Dashboard/DashboardStats';
 import InventoryTable from '@/components/Inventory/InventoryTable';
 import OrdersTable from '@/components/Orders/OrdersTable';
 import ProductionSchedule from '@/components/Production/ProductionSchedule';
+import CustomersTable from '@/components/Customers/CustomersTable';
 import { Button } from '@/components/ui/button';
 import { LogOut } from 'lucide-react';
 
@@ -42,15 +43,7 @@ const ERP = () => {
       case 'production':
         return <ProductionSchedule />;
       case 'customers':
-        return (
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-8">Customer Management</h1>
-            <div className="bg-white rounded-lg shadow p-8 text-center">
-              <p className="text-gray-600 mb-4">Customer management features are being developed.</p>
-              <p className="text-sm text-gray-500">This section will include customer profiles, communication history, and account management tools.</p>
-            </div>
-          </div>
-        );
+        return <CustomersTable />;
       case 'tickets':
         return (
           <div>
@@ -98,7 +91,6 @@ const ERP = () => {
                   <li><strong>Inventory Manager:</strong> Full access to inventory, orders, and product management</li>
                   <li><strong>Production Worker:</strong> Focus on production schedules, quality control, and inventory viewing</li>
                   <li><strong>Customer Service:</strong> Access to support tickets, customer management, and order viewing</li>
-                  <li><strong>Admin:</strong> Full system access and user management</li>
                 </ul>
               </div>
             </div>

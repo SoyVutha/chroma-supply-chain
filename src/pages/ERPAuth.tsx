@@ -5,14 +5,18 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useERPAuth } from '@/contexts/ERPAuthContext';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 
 const ERPAuth = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [name, setName] = useState('');
   const [loading, setLoading] = useState(false);
+  const [isSignUp, setIsSignUp] = useState(false);
   const { signIn, user, userRole, setUserRole } = useERPAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -29,16 +33,48 @@ const ERPAuth = () => {
     setLoading(true);
 
     try {
-      const result = await signIn(email, password);
-
-      if (result.error) {
-        toast({
-          title: "Authentication Error",
-          description: result.error.message,
-          variant: "destructive"
+      if (isSignUp) {
+        // Sign up new ERP worker
+        const { error } = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            data: {
+              name,
+              user_type: 'worker',
+              role: userRole
+            },
+            emailRedirectTo: `${window.location.origin}/erp`
+          }
         });
+
+        if (error) {
+          toast({
+            title: "Sign Up Error",
+            description: error.message,
+            variant: "destructive"
+          });
+        } else {
+          toast({
+            title: "Success",
+            description: "Please check your email to confirm your account",
+            variant: "default"
+          });
+          setIsSignUp(false);
+        }
       } else {
-        navigate('/erp');
+        // Sign in existing user
+        const result = await signIn(email, password);
+
+        if (result.error) {
+          toast({
+            title: "Authentication Error",
+            description: result.error.message,
+            variant: "destructive"
+          });
+        } else {
+          navigate('/erp');
+        }
       }
     } catch (error: any) {
       toast({
@@ -61,10 +97,26 @@ const ERPAuth = () => {
 
         <Card>
           <CardHeader>
-            <CardTitle>Staff Sign In</CardTitle>
-            <CardDescription>
-              Access the ERP system with your staff credentials
-            </CardDescription>
+            <Tabs value={isSignUp ? 'signup' : 'signin'} onValueChange={(value) => setIsSignUp(value === 'signup')}>
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="signin">Sign In</TabsTrigger>
+                <TabsTrigger value="signup">Sign Up</TabsTrigger>
+              </TabsList>
+              
+              <TabsContent value="signin">
+                <CardTitle>Staff Sign In</CardTitle>
+                <CardDescription>
+                  Access the ERP system with your staff credentials
+                </CardDescription>
+              </TabsContent>
+              
+              <TabsContent value="signup">
+                <CardTitle>Staff Registration</CardTitle>
+                <CardDescription>
+                  Create a new ERP staff account
+                </CardDescription>
+              </TabsContent>
+            </Tabs>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -78,10 +130,23 @@ const ERPAuth = () => {
                     <SelectItem value="inventory_manager">Inventory Manager</SelectItem>
                     <SelectItem value="production_worker">Production Worker</SelectItem>
                     <SelectItem value="customer_service">Customer Service</SelectItem>
-                    <SelectItem value="admin">Admin</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
+
+              {isSignUp && (
+                <div>
+                  <Label htmlFor="name">Full Name</Label>
+                  <Input
+                    id="name"
+                    type="text"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    required
+                    placeholder="Enter your full name"
+                  />
+                </div>
+              )}
               
               <div>
                 <Label htmlFor="email">Email</Label>
@@ -108,7 +173,7 @@ const ERPAuth = () => {
               </div>
               
               <Button type="submit" className="w-full" disabled={loading}>
-                {loading ? 'Signing In...' : 'Sign In to ERP'}
+                {loading ? (isSignUp ? 'Creating Account...' : 'Signing In...') : (isSignUp ? 'Create ERP Account' : 'Sign In to ERP')}
               </Button>
             </form>
           </CardContent>

@@ -15,24 +15,24 @@ export type Database = {
           email: string
           id: string
           name: string
-          password: string
           registered: boolean | null
+          user_id: string | null
         }
         Insert: {
           created_at?: string | null
           email: string
           id?: string
           name: string
-          password: string
           registered?: boolean | null
+          user_id?: string | null
         }
         Update: {
           created_at?: string | null
           email?: string
           id?: string
           name?: string
-          password?: string
           registered?: boolean | null
+          user_id?: string | null
         }
         Relationships: []
       }
@@ -79,18 +79,21 @@ export type Database = {
         Row: {
           created_at: string | null
           customer_id: string | null
+          customer_user_id: string | null
           id: string
           status: string | null
         }
         Insert: {
           created_at?: string | null
           customer_id?: string | null
+          customer_user_id?: string | null
           id?: string
           status?: string | null
         }
         Update: {
           created_at?: string | null
           customer_id?: string | null
+          customer_user_id?: string | null
           id?: string
           status?: string | null
         }
@@ -231,22 +234,28 @@ export type Database = {
       }
       support_tickets: {
         Row: {
+          assigned_worker_id: string | null
           created_at: string | null
           customer_id: string | null
+          customer_user_id: string | null
           id: string
           issue: string
           status: string | null
         }
         Insert: {
+          assigned_worker_id?: string | null
           created_at?: string | null
           customer_id?: string | null
+          customer_user_id?: string | null
           id?: string
           issue: string
           status?: string | null
         }
         Update: {
+          assigned_worker_id?: string | null
           created_at?: string | null
           customer_id?: string | null
+          customer_user_id?: string | null
           id?: string
           issue?: string
           status?: string | null
@@ -260,6 +269,33 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      worker_profiles: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          name: string
+          role: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          name: string
+          role: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          name?: string
+          role?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       workers: {
         Row: {
@@ -287,7 +323,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_user_role: {
+        Args: { user_uuid: string }
+        Returns: string
+      }
+      is_customer: {
+        Args: { user_uuid: string }
+        Returns: boolean
+      }
     }
     Enums: {
       [_ in never]: never
