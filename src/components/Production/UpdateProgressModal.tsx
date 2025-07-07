@@ -56,7 +56,8 @@ const UpdateProgressModal: React.FC<UpdateProgressModalProps> = ({
         newStatus = 'in_progress';
       }
 
-      const { error } = await supabase
+      // Use type assertion since types aren't updated yet
+      const { error } = await (supabase as any)
         .from('production_tasks')
         .update({ 
           quantity_completed: completed,

@@ -75,11 +75,25 @@ const AddTaskModal: React.FC<AddTaskModalProps> = ({ isOpen, onClose, onTaskAdde
         status: 'pending'
       };
 
-      const { error } = await supabase
-        .from('production_tasks')
-        .insert([taskData]);
+      // Use rpc call to insert the task since types aren't updated yet
+      const { error } = await supabase.rpc('insert_production_task', {
+        task_name: taskData.task_name,
+        product_id: taskData.product_id,
+        assigned_worker_id: taskData.assigned_worker_id,
+        quantity_target: taskData.quantity_target,
+        priority: taskData.priority,
+        due_date: taskData.due_date,
+        status: taskData.status
+      });
 
-      if (error) throw error;
+      if (error) {
+        // Fallback to direct SQL if RPC doesn't exist
+        const { error: insertError } = await supabase
+          .from('production_tasks' as any)
+          .insert([taskData]);
+        
+        if (insertError) throw insertError;
+      }
 
       toast({
         title: "Success",

@@ -36,7 +36,8 @@ const ProductionSchedule: React.FC = () => {
 
   const fetchTasks = async () => {
     try {
-      const { data, error } = await supabase
+      // Use a direct query with type assertion since types aren't updated yet
+      const { data, error } = await (supabase as any)
         .from('production_tasks')
         .select(`
           *,
@@ -48,6 +49,7 @@ const ProductionSchedule: React.FC = () => {
       if (error) throw error;
       setTasks(data || []);
     } catch (error: any) {
+      console.log('Error loading production tasks:', error);
       toast({
         title: "Error",
         description: "Failed to load production tasks",
