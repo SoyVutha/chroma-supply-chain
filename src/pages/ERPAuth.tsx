@@ -6,10 +6,12 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useERPAuth } from '@/contexts/ERPAuthContext';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { AlertTriangle } from 'lucide-react';
 
 const ERPAuth = () => {
   const [email, setEmail] = useState('');
@@ -67,11 +69,20 @@ const ERPAuth = () => {
         const result = await signIn(email, password);
 
         if (result.error) {
-          toast({
-            title: "Authentication Error",
-            description: result.error.message,
-            variant: "destructive"
-          });
+          // Check if error is due to non-ERP user
+          if (result.error.message.includes('Invalid login credentials')) {
+            toast({
+              title: "Access Denied",
+              description: "Only ERP staff members can access this system. If you're a customer, please use the main store.",
+              variant: "destructive"
+            });
+          } else {
+            toast({
+              title: "Authentication Error",
+              description: result.error.message,
+              variant: "destructive"
+            });
+          }
         } else {
           navigate('/erp');
         }
@@ -94,6 +105,13 @@ const ERPAuth = () => {
           <h1 className="text-3xl font-bold text-blue-600 mb-2">Metaflow ERP</h1>
           <p className="text-gray-600">Staff Access Portal</p>
         </div>
+
+        <Alert>
+          <AlertTriangle className="h-4 w-4" />
+          <AlertDescription>
+            This system is restricted to authorized ERP staff only. Customers should use the main store interface.
+          </AlertDescription>
+        </Alert>
 
         <Card>
           <CardHeader>

@@ -8,6 +8,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { ERPAuthProvider } from "@/contexts/ERPAuthContext";
 import Index from "./pages/Index";
 import Customer from "./pages/Customer";
+import MyOrders from "./pages/MyOrders";
 import Auth from "./pages/Auth";
 import ERP from "./pages/ERP";
 import ERPAuth from "./pages/ERPAuth";
@@ -30,6 +31,11 @@ const App = () => (
               <Routes>
                 <Route path="/" element={<Customer />} />
               </Routes>
+            </AuthProvider>
+          } />
+          <Route path="/my-orders" element={
+            <AuthProvider>
+              <MyOrders />
             </AuthProvider>
           } />
           <Route path="/auth" element={

@@ -33,24 +33,65 @@ export const ERPAuthProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const [loading, setLoading] = useState(true);
   const [userRole, setUserRole] = useState<'inventory_manager' | 'production_worker' | 'customer_service' | 'admin'>('inventory_manager');
 
+  const validateERPUser = async (session: Session | null) => {
+    if (!session?.user) {
+      setUser(null);
+      setLoading(false);
+      return;
+    }
+
+    try {
+      // Check if user has a worker profile (ERP staff)
+      const { data: workerProfile, error } = await supabase
+        .from('worker_profiles')
+        .select('role')
+        .eq('user_id', session.user.id)
+        .single();
+
+      if (error || !workerProfile) {
+        // User is not an ERP worker, sign them out
+        console.log('Non-ERP user attempted to access ERP system');
+        await supabase.auth.signOut();
+        setUser(null);
+        setSession(null);
+        setLoading(false);
+        return;
+      }
+
+      // Valid ERP user - set their role and user data
+      const erpUser: ERPUser = {
+        ...session.user,
+        role: workerProfile.role as 'inventory_manager' | 'production_worker' | 'customer_service' | 'admin'
+      };
+      
+      setUser(erpUser);
+      setUserRole(workerProfile.role as 'inventory_manager' | 'production_worker' | 'customer_service' | 'admin');
+    } catch (error) {
+      console.error('Error validating ERP user:', error);
+      await supabase.auth.signOut();
+      setUser(null);
+      setSession(null);
+    }
+    
+    setLoading(false);
+  };
+
   useEffect(() => {
     // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
+      async (event, session) => {
         console.log('ERP Auth state changed:', event, session);
         setSession(session);
         
-        if (session?.user) {
-          // For ERP users, we add role information
-          const erpUser: ERPUser = {
-            ...session.user,
-            role: userRole
-          };
-          setUser(erpUser);
-        } else {
+        if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
+          // Defer validation to prevent potential deadlocks
+          setTimeout(() => {
+            validateERPUser(session);
+          }, 0);
+        } else if (event === 'SIGNED_OUT') {
           setUser(null);
+          setLoading(false);
         }
-        setLoading(false);
       }
     );
 
@@ -58,21 +99,11 @@ export const ERPAuthProvider: React.FC<{ children: React.ReactNode }> = ({ child
     supabase.auth.getSession().then(({ data: { session } }) => {
       console.log('ERP Initial session:', session);
       setSession(session);
-      
-      if (session?.user) {
-        const erpUser: ERPUser = {
-          ...session.user,
-          role: userRole
-        };
-        setUser(erpUser);
-      } else {
-        setUser(null);
-      }
-      setLoading(false);
+      validateERPUser(session);
     });
 
     return () => subscription.unsubscribe();
-  }, [userRole]);
+  }, []);
 
   const signIn = async (email: string, password: string) => {
     const { error } = await supabase.auth.signInWithPassword({
