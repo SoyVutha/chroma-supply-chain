@@ -10,8 +10,7 @@ import {
   Factory,
   Headphones,
   ClipboardCheck,
-  BarChart3,
-  Shield
+  BarChart3
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -23,8 +22,7 @@ interface SidebarProps {
 const Sidebar: React.FC<SidebarProps> = ({ activeSection, onSectionChange, userRole }) => {
   const getMenuItems = () => {
     const commonItems = [
-      { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-      { id: 'settings', label: 'Settings', icon: Settings }
+      { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard }
     ];
 
     const roleSpecificItems = {
@@ -36,28 +34,30 @@ const Sidebar: React.FC<SidebarProps> = ({ activeSection, onSectionChange, userR
       production_worker: [
         { id: 'production', label: 'Production', icon: Factory },
         { id: 'quality', label: 'Quality Control', icon: ClipboardCheck },
-        { id: 'inventory', label: 'View Inventory', icon: Package }
+        { id: 'inventory-view', label: 'View Inventory', icon: Package }
       ],
       customer_service: [
-        { id: 'tickets', label: 'Support Tickets', icon: Headphones },
         { id: 'customers', label: 'Customers', icon: Users },
-        { id: 'orders', label: 'View Orders', icon: ShoppingCart }
+        { id: 'tickets', label: 'Support Tickets', icon: Headphones },
+        { id: 'orders-view', label: 'View Orders', icon: ShoppingCart }
       ],
       admin: [
         { id: 'inventory', label: 'Inventory', icon: Package },
         { id: 'orders', label: 'Orders', icon: ShoppingCart },
         { id: 'production', label: 'Production', icon: Factory },
-        { id: 'tickets', label: 'Support Tickets', icon: Headphones },
         { id: 'customers', label: 'Customers', icon: Users },
+        { id: 'tickets', label: 'Support Tickets', icon: Headphones },
         { id: 'products', label: 'Products', icon: BarChart3 },
         { id: 'quality', label: 'Quality Control', icon: ClipboardCheck }
       ]
     };
 
+    const settingsItem = { id: 'settings', label: 'Settings', icon: Settings };
+
     return [
-      commonItems[0], // Dashboard first
+      ...commonItems,
       ...roleSpecificItems[userRole],
-      commonItems[1]  // Settings last
+      settingsItem
     ];
   };
 

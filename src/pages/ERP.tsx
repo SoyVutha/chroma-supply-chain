@@ -38,8 +38,30 @@ const ERP = () => {
         );
       case 'inventory':
         return <InventoryTable />;
+      case 'inventory-view':
+        // Read-only inventory view for production workers
+        return (
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900 mb-8">Inventory Overview</h1>
+            <div className="bg-white rounded-lg shadow p-6">
+              <p className="text-gray-600 mb-4">View current inventory levels and product information.</p>
+              <InventoryTable />
+            </div>
+          </div>
+        );
       case 'orders':
         return <OrdersTable />;
+      case 'orders-view':
+        // Read-only orders view for customer service
+        return (
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900 mb-8">Customer Orders</h1>
+            <div className="bg-white rounded-lg shadow p-6">
+              <p className="text-gray-600 mb-4">View and track customer orders.</p>
+              <OrdersTable />
+            </div>
+          </div>
+        );
       case 'production':
         return <ProductionSchedule />;
       case 'customers':
@@ -90,7 +112,7 @@ const ERP = () => {
                 <ul className="text-sm text-blue-800 space-y-1">
                   <li><strong>Inventory Manager:</strong> Full access to inventory, orders, and product management</li>
                   <li><strong>Production Worker:</strong> Focus on production schedules, quality control, and inventory viewing</li>
-                  <li><strong>Customer Service:</strong> Access to support tickets, customer management, and order viewing</li>
+                  <li><strong>Customer Service:</strong> Access to customer management, support tickets, and order viewing</li>
                 </ul>
               </div>
             </div>
