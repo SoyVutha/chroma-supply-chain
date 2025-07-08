@@ -22,7 +22,7 @@ const ERP = () => {
     }
   }, [user, loading, navigate]);
 
-  // Set initial section based on user role and current route
+  // Set initial section based on current route
   useEffect(() => {
     if (user && userRole) {
       const currentPath = window.location.pathname;
@@ -37,27 +37,10 @@ const ERP = () => {
         setActiveSection('inventory-settings');
       } else if (currentPath.includes('/inventorymanagement')) {
         setActiveSection('inventory-table'); // Default to inventory table for base route
-      } else if (currentPath === '/erp/customerservice' || currentPath.includes('/customerservice')) {
-        console.log('Setting activeSection to customer-service');
-        setActiveSection('customer-service');
-      } else if (currentPath.includes('/orders')) {
-        setActiveSection('orders');
-      } else if (currentPath.includes('/customer-orders')) {
-        setActiveSection('customer-orders');
-      } else if (currentPath.includes('/customers')) {
-        setActiveSection('customers');
-      } else if (currentPath.includes('/tickets')) {
-        setActiveSection('tickets');
-      } else if (currentPath.includes('/settings')) {
-        setActiveSection('settings');
       } else {
         // Default redirect based on role if on base /erp route
         if (currentPath === '/erp' || currentPath === '/erp/') {
-          if (userRole === 'inventory_manager') {
-            navigate('/erp/inventorymanagement/inventory');
-          } else if (userRole === 'customer_service') {
-            navigate('/erp/customerservice');
-          }
+          navigate('/erp/inventorymanagement/inventory');
         }
       }
     }
@@ -90,40 +73,24 @@ const ERP = () => {
   const renderContent = () => {
     console.log('renderContent called with activeSection:', activeSection, 'userRole:', userRole);
     switch (activeSection) {
-      case 'dashboard':
-        return (
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-8">ERP Dashboard</h1>
-            <DashboardStats userRole={userRole} />
-          </div>
-        );
-      
       case 'inventory-orders':
-        return userRole === 'inventory_manager' ? (
+        return (
           <div>
             <h1 className="text-3xl font-bold text-gray-900 mb-8">Customer Orders</h1>
             <OrdersTable />
           </div>
-        ) : (
-          <div className="text-center p-8">
-            <p className="text-gray-600">Access denied. This section is for Inventory Managers only.</p>
-          </div>
         );
       
       case 'inventory-table':
-        return userRole === 'inventory_manager' ? (
+        return (
           <div>
             <h1 className="text-3xl font-bold text-gray-900 mb-8">Inventory Management</h1>
             <InventoryTable />
           </div>
-        ) : (
-          <div className="text-center p-8">
-            <p className="text-gray-600">Access denied. This section is for Inventory Managers only.</p>
-          </div>
         );
       
       case 'inventory-settings':
-        return userRole === 'inventory_manager' ? (
+        return (
           <div>
             <h1 className="text-3xl font-bold text-gray-900 mb-8">Inventory Settings</h1>
             <div className="bg-white rounded-lg shadow p-6">
@@ -136,7 +103,6 @@ const ERP = () => {
               <div className="mt-6 p-4 bg-blue-50 rounded-lg">
                 <h3 className="font-medium text-blue-900 mb-2">Inventory Manager Access:</h3>
                 <ul className="text-sm text-blue-800 space-y-1">
-                  <li><strong>Dashboard:</strong> View inventory statistics and summaries</li>
                   <li><strong>Orders:</strong> Manage and view customer orders</li>
                   <li><strong>Inventory:</strong> Add, edit, and manage product inventory</li>
                   <li><strong>Settings:</strong> Configure inventory system preferences</li>
@@ -144,87 +110,15 @@ const ERP = () => {
               </div>
             </div>
           </div>
-        ) : (
-          <div className="text-center p-8">
-            <p className="text-gray-600">Access denied. This section is for Inventory Managers only.</p>
-          </div>
         );
       
-      // Customer Service Workspace
-      case 'customer-service':
-        return userRole === 'customer_service' ? (
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-8">Customer Service Dashboard</h1>
-            <CustomersTable />
-          </div>
-        ) : (
-          <div className="text-center p-8">
-            <p className="text-gray-600">Access denied. This section is for Customer Service only.</p>
-          </div>
-        );
-      
-      // Legacy cases for backward compatibility
-      case 'inventory':
-        return userRole === 'inventory_manager' ? <InventoryTable /> : (
-          <div className="text-center p-8">
-            <p className="text-gray-600">Access denied. This section is for Inventory Managers only.</p>
-          </div>
-        );
-      case 'orders':
-        return userRole === 'inventory_manager' ? <OrdersTable /> : (
-          <div className="text-center p-8">
-            <p className="text-gray-600">Access denied. This section is for Inventory Managers only.</p>
-          </div>
-        );
-      case 'customer-orders':
-        return userRole === 'customer_service' ? <CustomerOrdersTable /> : (
-          <div className="text-center p-8">
-            <p className="text-gray-600">Access denied. This section is for Customer Service only.</p>
-          </div>
-        );
-      case 'customers':
-        return userRole === 'customer_service' ? <CustomersTable /> : (
-          <div className="text-center p-8">
-            <p className="text-gray-600">Access denied. This section is for Customer Service only.</p>
-          </div>
-        );
-      case 'tickets':
-        return userRole === 'customer_service' ? (
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-8">Support Tickets</h1>
-            <div className="bg-white rounded-lg shadow p-8 text-center">
-              <p className="text-gray-600 mb-4">Support ticket management system coming soon.</p>
-              <p className="text-sm text-gray-500">Track and resolve customer support requests efficiently.</p>
-            </div>
-          </div>
-        ) : (
-          <div className="text-center p-8">
-            <p className="text-gray-600">Access denied. This section is for Customer Service only.</p>
-          </div>
-        );
-      case 'settings':
+      default:
         return (
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-8">ERP Settings</h1>
-            <div className="bg-white rounded-lg shadow p-6">
-              <h2 className="text-xl font-semibold mb-4">Staff Role Information</h2>
-              <p className="text-gray-600 mb-4">
-                Your current role determines what features and data you can access in the ERP system.
-              </p>
-              <p className="text-sm text-gray-500 mb-4">Current role: <span className="font-medium capitalize">{userRole.replace('_', ' ')}</span></p>
-              
-              <div className="mt-6 p-4 bg-blue-50 rounded-lg">
-                <h3 className="font-medium text-blue-900 mb-2">Role Access Rights:</h3>
-                <ul className="text-sm text-blue-800 space-y-1">
-                  <li><strong>Inventory Manager:</strong> Full access to inventory and order management</li>
-                  <li><strong>Customer Service:</strong> Access to customer management, support tickets, and customer order viewing</li>
-                </ul>
-              </div>
-            </div>
+            <h1 className="text-3xl font-bold text-gray-900 mb-8">ERP Dashboard</h1>
+            <DashboardStats userRole={userRole} />
           </div>
         );
-      default:
-        return <div>Select a section from the sidebar</div>;
     }
   };
 

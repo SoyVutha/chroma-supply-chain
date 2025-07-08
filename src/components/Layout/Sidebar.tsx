@@ -16,7 +16,7 @@ import {
 interface SidebarProps {
   activeSection: string;
   onSectionChange: (section: string) => void;
-  userRole: 'inventory_manager' | 'customer_service';
+  userRole: 'inventory_manager';
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ activeSection, onSectionChange, userRole }) => {
@@ -31,63 +31,39 @@ const Sidebar: React.FC<SidebarProps> = ({ activeSection, onSectionChange, userR
   };
 
   const getMenuItems = () => {
-    if (userRole === 'inventory_manager') {
-      return [
-        {
-          id: 'inventory-management',
-          label: 'Inventory Management',
-          icon: Package,
-          isExpandable: true,
-          subitems: [
-            { 
-              id: 'inventory-orders', 
-              label: 'Orders', 
-              icon: ShoppingCart,
-              path: '/erp/inventorymanagement/orders',
-              section: 'inventory-orders'
-            },
-            { 
-              id: 'inventory-table', 
-              label: 'Inventory', 
-              icon: Package,
-              path: '/erp/inventorymanagement/inventory',
-              section: 'inventory-table'
-            },
-            { 
-              id: 'inventory-settings', 
-              label: 'Settings', 
-              icon: Settings,
-              path: '/erp/inventorymanagement/settings',
-              section: 'inventory-settings'
-            }
-          ]
-        }
-      ];
-    } else {
-      return [
-        { 
-          id: 'customer-service', 
-          label: 'Customer Service', 
-          icon: Users,
-          path: '/erp/customerservice',
-          section: 'customer-service'
-        },
-        { 
-          id: 'tickets', 
-          label: 'Support Tickets', 
-          icon: Headphones,
-          path: '/erp/tickets',
-          section: 'tickets'
-        },
-        { 
-          id: 'customer-orders', 
-          label: 'Customer Orders', 
-          icon: ShoppingCart,
-          path: '/erp/customer-orders',
-          section: 'customer-orders'
-        }
-      ];
-    }
+    return [
+      {
+        id: 'inventory-management',
+        label: 'Inventory Management',
+        icon: Package,
+        isExpandable: true,
+        path: '/erp/inventorymanagement',
+        section: 'inventory-management',
+        subitems: [
+          { 
+            id: 'inventory-orders', 
+            label: 'Orders', 
+            icon: ShoppingCart,
+            path: '/erp/inventorymanagement/orders',
+            section: 'inventory-orders'
+          },
+          { 
+            id: 'inventory-table', 
+            label: 'Inventory', 
+            icon: Package,
+            path: '/erp/inventorymanagement/inventory',
+            section: 'inventory-table'
+          },
+          { 
+            id: 'inventory-settings', 
+            label: 'Settings', 
+            icon: Settings,
+            path: '/erp/inventorymanagement/settings',
+            section: 'inventory-settings'
+          }
+        ]
+      }
+    ];
   };
 
   const menuItems = getMenuItems();

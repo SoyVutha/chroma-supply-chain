@@ -47,20 +47,13 @@ const App = () => (
           {/* ERP Routes - wrapped in ERPAuthProvider */}
           <Route path="/erp/*" element={
             <ERPAuthProvider>
-              <Routes>
-                <Route path="/" element={<ERP />} />
-                <Route path="customerservice" element={<ERP />} />
-                <Route path="inventorymanagement" element={<ERP />} />
-                
-                <Route path="inventorymanagement/orders" element={<ERP />} />
-                <Route path="inventorymanagement/inventory" element={<ERP />} />
-                <Route path="inventorymanagement/settings" element={<ERP />} />
-                <Route path="orders" element={<ERP />} />
-                <Route path="customer-orders" element={<ERP />} />
-                <Route path="customers" element={<ERP />} />
-                <Route path="tickets" element={<ERP />} />
-                <Route path="settings" element={<ERP />} />
-              </Routes>
+               <Routes>
+                 <Route path="/" element={<ERP />} />
+                 <Route path="inventorymanagement" element={<ERP />} />
+                 <Route path="inventorymanagement/orders" element={<ERP />} />
+                 <Route path="inventorymanagement/inventory" element={<ERP />} />
+                 <Route path="inventorymanagement/settings" element={<ERP />} />
+               </Routes>
             </ERPAuthProvider>
           } />
           <Route path="/erp-auth" element={

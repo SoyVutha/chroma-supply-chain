@@ -138,18 +138,6 @@ const ERPAuth = () => {
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <Label htmlFor="role">Your Role</Label>
-                <Select value={userRole} onValueChange={(value: any) => setUserRole(value)}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select your role" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="inventory_manager">Inventory Manager</SelectItem>
-                    <SelectItem value="customer_service">Customer Service</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
 
               {isSignUp && (
                 <div>
