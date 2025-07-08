@@ -7,7 +7,6 @@ import {
   ShoppingCart, 
   Users, 
   Settings,
-  Factory,
   Headphones,
   ClipboardCheck,
   BarChart3
@@ -16,7 +15,7 @@ import {
 interface SidebarProps {
   activeSection: string;
   onSectionChange: (section: string) => void;
-  userRole: 'inventory_manager' | 'production_worker' | 'customer_service' | 'admin';
+  userRole: 'inventory_manager' | 'customer_service' | 'admin';
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ activeSection, onSectionChange, userRole }) => {
@@ -29,26 +28,21 @@ const Sidebar: React.FC<SidebarProps> = ({ activeSection, onSectionChange, userR
       inventory_manager: [
         { id: 'inventory', label: 'Inventory', icon: Package },
         { id: 'orders', label: 'Orders', icon: ShoppingCart },
-        { id: 'products', label: 'Products', icon: BarChart3 }
-      ],
-      production_worker: [
-        { id: 'production', label: 'Production', icon: Factory },
-        { id: 'quality', label: 'Quality Control', icon: ClipboardCheck },
-        { id: 'inventory-view', label: 'View Inventory', icon: Package }
+        { id: 'products', label: 'Products', icon: BarChart3 },
+        { id: 'production', label: 'Production', icon: ClipboardCheck }
       ],
       customer_service: [
         { id: 'customers', label: 'Customers', icon: Users },
         { id: 'tickets', label: 'Support Tickets', icon: Headphones },
-        { id: 'orders-view', label: 'View Orders', icon: ShoppingCart }
+        { id: 'customer-orders', label: 'Customer Orders', icon: ShoppingCart }
       ],
       admin: [
         { id: 'inventory', label: 'Inventory', icon: Package },
         { id: 'orders', label: 'Orders', icon: ShoppingCart },
-        { id: 'production', label: 'Production', icon: Factory },
         { id: 'customers', label: 'Customers', icon: Users },
         { id: 'tickets', label: 'Support Tickets', icon: Headphones },
         { id: 'products', label: 'Products', icon: BarChart3 },
-        { id: 'quality', label: 'Quality Control', icon: ClipboardCheck }
+        { id: 'customer-orders', label: 'Customer Orders', icon: ShoppingCart }
       ]
     };
 

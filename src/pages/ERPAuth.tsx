@@ -146,8 +146,8 @@ const ERPAuth = () => {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="inventory_manager">Inventory Manager</SelectItem>
-                    <SelectItem value="production_worker">Production Worker</SelectItem>
                     <SelectItem value="customer_service">Customer Service</SelectItem>
+                    <SelectItem value="admin">Administrator</SelectItem>
                   </SelectContent>
                 </Select>
               </div>

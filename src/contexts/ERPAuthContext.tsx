@@ -4,17 +4,17 @@ import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 
 interface ERPUser extends User {
-  role?: 'inventory_manager' | 'production_worker' | 'customer_service' | 'admin';
+  role?: 'inventory_manager' | 'customer_service' | 'admin';
 }
 
 interface ERPAuthContextType {
   user: ERPUser | null;
   session: Session | null;
   loading: boolean;
-  userRole: 'inventory_manager' | 'production_worker' | 'customer_service' | 'admin';
+  userRole: 'inventory_manager' | 'customer_service' | 'admin';
   signIn: (email: string, password: string) => Promise<{ error: any }>;
   signOut: () => Promise<void>;
-  setUserRole: (role: 'inventory_manager' | 'production_worker' | 'customer_service' | 'admin') => void;
+  setUserRole: (role: 'inventory_manager' | 'customer_service' | 'admin') => void;
 }
 
 const ERPAuthContext = createContext<ERPAuthContextType | undefined>(undefined);
@@ -31,7 +31,7 @@ export const ERPAuthProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const [user, setUser] = useState<ERPUser | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
-  const [userRole, setUserRole] = useState<'inventory_manager' | 'production_worker' | 'customer_service' | 'admin'>('inventory_manager');
+  const [userRole, setUserRole] = useState<'inventory_manager' | 'customer_service' | 'admin'>('inventory_manager');
 
   const validateERPUser = async (session: Session | null) => {
     if (!session?.user) {
@@ -61,11 +61,11 @@ export const ERPAuthProvider: React.FC<{ children: React.ReactNode }> = ({ child
       // Valid ERP user - set their role and user data
       const erpUser: ERPUser = {
         ...session.user,
-        role: workerProfile.role as 'inventory_manager' | 'production_worker' | 'customer_service' | 'admin'
+        role: workerProfile.role as 'inventory_manager' | 'customer_service' | 'admin'
       };
       
       setUser(erpUser);
-      setUserRole(workerProfile.role as 'inventory_manager' | 'production_worker' | 'customer_service' | 'admin');
+      setUserRole(workerProfile.role as 'inventory_manager' | 'customer_service' | 'admin');
     } catch (error) {
       console.error('Error validating ERP user:', error);
       await supabase.auth.signOut();

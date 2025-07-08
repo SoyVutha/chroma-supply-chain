@@ -46,6 +46,19 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
     setLoading(true);
 
     try {
+      // Check stock availability before proceeding
+      for (const item of cartItems) {
+        if (item.quantity > item.stock_quantity) {
+          toast({
+            title: "Insufficient Stock",
+            description: `Only ${item.stock_quantity} units of ${item.name} are available.`,
+            variant: "destructive"
+          });
+          setLoading(false);
+          return;
+        }
+      }
+
       let customerId = null;
 
       // If user is logged in, use their existing customer record or create one
@@ -91,13 +104,13 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
         customerId = guestCustomer.id;
       }
 
-      // Create the order
+      // Create the order with correct status
       const { data: order, error: orderError } = await supabase
         .from('orders')
         .insert({
           customer_id: customerId,
           customer_user_id: user?.id || null,
-          status: 'pending'
+          status: 'pending' // Use valid status from constraint
         })
         .select('id')
         .single();
@@ -120,10 +133,15 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
 
       // Update product stock quantities
       for (const item of cartItems) {
+        const newStock = item.stock_quantity - item.quantity;
+        if (newStock < 0) {
+          throw new Error(`Insufficient stock for ${item.name}`);
+        }
+        
         const { error: stockError } = await supabase
           .from('products')
           .update({ 
-            stock_quantity: item.stock_quantity - item.quantity 
+            stock_quantity: newStock
           })
           .eq('id', item.id);
 
@@ -139,6 +157,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
       onClose();
       
     } catch (error: any) {
+      console.error('Order placement error:', error);
       toast({
         title: "Order Failed",
         description: error.message || "Failed to place order. Please try again.",
