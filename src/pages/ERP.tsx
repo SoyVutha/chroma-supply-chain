@@ -22,30 +22,57 @@ const ERP = () => {
     }
   }, [user, loading, navigate]);
 
-  // Set initial section based on user role and redirect to specific routes
+  // Set initial section based on user role and current route
   useEffect(() => {
     if (user && userRole) {
       const currentPath = window.location.pathname;
       
-      if (userRole === 'inventory_manager') {
+      // Set section based on current route
+      if (currentPath.includes('/inventory')) {
+        setActiveSection('inventory');
+      } else if (currentPath.includes('/customerservice')) {
+        setActiveSection('customers');
+      } else if (currentPath.includes('/orders')) {
+        setActiveSection('orders');
+      } else if (currentPath.includes('/customer-orders')) {
+        setActiveSection('customer-orders');
+      } else if (currentPath.includes('/customers')) {
+        setActiveSection('customers');
+      } else if (currentPath.includes('/tickets')) {
+        setActiveSection('tickets');
+      } else if (currentPath.includes('/settings')) {
+        setActiveSection('settings');
+      } else {
+        // Default redirect based on role if on base /erp route
         if (currentPath === '/erp' || currentPath === '/erp/') {
-          navigate('/erp/inventory');
-        } else if (currentPath.startsWith('/erp/inventory')) {
-          setActiveSection('inventory');
-        } else if (currentPath.startsWith('/erp/orders')) {
-          setActiveSection('orders');
-        }
-      } else if (userRole === 'customer_service') {
-        if (currentPath === '/erp' || currentPath === '/erp/') {
-          navigate('/erp/customerservice');
-        } else if (currentPath.startsWith('/erp/customerservice')) {
-          setActiveSection('customers');
-        } else if (currentPath.startsWith('/erp/customer-orders')) {
-          setActiveSection('customer-orders');
+          if (userRole === 'inventory_manager') {
+            navigate('/erp/inventory');
+          } else if (userRole === 'customer_service') {
+            navigate('/erp/customerservice');
+          }
         }
       }
     }
   }, [user, userRole, navigate]);
+
+  const handleSectionChange = (section: string) => {
+    setActiveSection(section);
+    
+    // Navigate to the appropriate route
+    const routeMap: { [key: string]: string } = {
+      'dashboard': '/erp',
+      'inventory': '/erp/inventory',
+      'orders': '/erp/orders',
+      'customers': '/erp/customerservice',
+      'customer-orders': '/erp/customer-orders',
+      'tickets': '/erp/tickets',
+      'settings': '/erp/settings'
+    };
+    
+    if (routeMap[section]) {
+      navigate(routeMap[section]);
+    }
+  };
 
   const handleSignOut = async () => {
     await signOut();
@@ -141,7 +168,7 @@ const ERP = () => {
     <div className="min-h-screen bg-gray-50 flex">
       <Sidebar 
         activeSection={activeSection} 
-        onSectionChange={setActiveSection}
+        onSectionChange={handleSectionChange}
         userRole={userRole}
       />
       
