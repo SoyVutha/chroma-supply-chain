@@ -49,7 +49,7 @@ const App = () => (
             <ERPAuthProvider>
               <Routes>
                 <Route path="/" element={<ERP />} />
-                <Route path="inventory" element={<ERP />} />
+                <Route path="inventorymanagement" element={<ERP />} />
                 <Route path="customerservice" element={<ERP />} />
                 <Route path="orders" element={<ERP />} />
                 <Route path="customer-orders" element={<ERP />} />

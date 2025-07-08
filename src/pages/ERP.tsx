@@ -28,7 +28,7 @@ const ERP = () => {
       const currentPath = window.location.pathname;
       
       // Set section based on current route
-      if (currentPath.includes('/inventory')) {
+      if (currentPath.includes('/inventorymanagement')) {
         setActiveSection('inventory');
       } else if (currentPath.includes('/customerservice')) {
         setActiveSection('customers');
@@ -46,7 +46,7 @@ const ERP = () => {
         // Default redirect based on role if on base /erp route
         if (currentPath === '/erp' || currentPath === '/erp/') {
           if (userRole === 'inventory_manager') {
-            navigate('/erp/inventory');
+            navigate('/erp/inventorymanagement');
           } else if (userRole === 'customer_service') {
             navigate('/erp/customerservice');
           }
@@ -61,7 +61,7 @@ const ERP = () => {
     // Navigate to the appropriate route
     const routeMap: { [key: string]: string } = {
       'dashboard': '/erp',
-      'inventory': '/erp/inventory',
+      'inventory': '/erp/inventorymanagement',
       'orders': '/erp/orders',
       'customers': '/erp/customerservice',
       'customer-orders': '/erp/customer-orders',
