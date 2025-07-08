@@ -49,13 +49,13 @@ const App = () => (
             <ERPAuthProvider>
               <Routes>
                 <Route path="/" element={<ERP />} />
-                <Route path="/inventory" element={<ERP />} />
-                <Route path="/customerservice" element={<ERP />} />
-                <Route path="/orders" element={<ERP />} />
-                <Route path="/customer-orders" element={<ERP />} />
-                <Route path="/customers" element={<ERP />} />
-                <Route path="/tickets" element={<ERP />} />
-                <Route path="/settings" element={<ERP />} />
+                <Route path="inventory" element={<ERP />} />
+                <Route path="customerservice" element={<ERP />} />
+                <Route path="orders" element={<ERP />} />
+                <Route path="customer-orders" element={<ERP />} />
+                <Route path="customers" element={<ERP />} />
+                <Route path="tickets" element={<ERP />} />
+                <Route path="settings" element={<ERP />} />
               </Routes>
             </ERPAuthProvider>
           } />
