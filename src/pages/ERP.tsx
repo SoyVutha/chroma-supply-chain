@@ -22,16 +22,30 @@ const ERP = () => {
     }
   }, [user, loading, navigate]);
 
-  // Set initial section based on user role
+  // Set initial section based on user role and redirect to specific routes
   useEffect(() => {
     if (user && userRole) {
+      const currentPath = window.location.pathname;
+      
       if (userRole === 'inventory_manager') {
-        setActiveSection('inventory');
+        if (currentPath === '/erp' || currentPath === '/erp/') {
+          navigate('/erp/inventory');
+        } else if (currentPath.startsWith('/erp/inventory')) {
+          setActiveSection('inventory');
+        } else if (currentPath.startsWith('/erp/orders')) {
+          setActiveSection('orders');
+        }
       } else if (userRole === 'customer_service') {
-        setActiveSection('customers');
+        if (currentPath === '/erp' || currentPath === '/erp/') {
+          navigate('/erp/customerservice');
+        } else if (currentPath.startsWith('/erp/customerservice')) {
+          setActiveSection('customers');
+        } else if (currentPath.startsWith('/erp/customer-orders')) {
+          setActiveSection('customer-orders');
+        }
       }
     }
-  }, [user, userRole]);
+  }, [user, userRole, navigate]);
 
   const handleSignOut = async () => {
     await signOut();

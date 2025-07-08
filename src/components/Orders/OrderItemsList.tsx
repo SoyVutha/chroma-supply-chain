@@ -2,7 +2,6 @@
 import React from 'react';
 
 interface OrderItem {
-  product_id: string;
   product_name: string;
   quantity: number;
   price: number;
