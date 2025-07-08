@@ -28,16 +28,14 @@ const ERP = () => {
       const currentPath = window.location.pathname;
       
       // Set section based on current route
-      if (currentPath.includes('/inventorymanagement/dashboard')) {
-        setActiveSection('inventory-dashboard');
-      } else if (currentPath.includes('/inventorymanagement/orders')) {
+      if (currentPath.includes('/inventorymanagement/orders')) {
         setActiveSection('inventory-orders');
       } else if (currentPath.includes('/inventorymanagement/inventory')) {
         setActiveSection('inventory-table');
       } else if (currentPath.includes('/inventorymanagement/settings')) {
         setActiveSection('inventory-settings');
       } else if (currentPath.includes('/inventorymanagement')) {
-        setActiveSection('inventory-dashboard'); // Default to dashboard for base route
+        setActiveSection('inventory-table'); // Default to inventory table for base route
       } else if (currentPath.includes('/customerservice')) {
         setActiveSection('customer-service');
       } else if (currentPath.includes('/orders')) {
@@ -54,7 +52,7 @@ const ERP = () => {
         // Default redirect based on role if on base /erp route
         if (currentPath === '/erp' || currentPath === '/erp/') {
           if (userRole === 'inventory_manager') {
-            navigate('/erp/inventorymanagement/dashboard');
+            navigate('/erp/inventorymanagement/inventory');
           } else if (userRole === 'customer_service') {
             navigate('/erp/customerservice');
           }
@@ -94,19 +92,6 @@ const ERP = () => {
           <div>
             <h1 className="text-3xl font-bold text-gray-900 mb-8">ERP Dashboard</h1>
             <DashboardStats userRole={userRole} />
-          </div>
-        );
-      
-      // Inventory Management Subroutes
-      case 'inventory-dashboard':
-        return userRole === 'inventory_manager' ? (
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-8">Inventory Management Dashboard</h1>
-            <DashboardStats userRole={userRole} />
-          </div>
-        ) : (
-          <div className="text-center p-8">
-            <p className="text-gray-600">Access denied. This section is for Inventory Managers only.</p>
           </div>
         );
       

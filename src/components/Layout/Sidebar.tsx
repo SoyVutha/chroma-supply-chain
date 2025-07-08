@@ -47,13 +47,6 @@ const Sidebar: React.FC<SidebarProps> = ({ activeSection, onSectionChange, userR
           isExpandable: true,
           subitems: [
             { 
-              id: 'inventory-dashboard', 
-              label: 'Dashboard', 
-              icon: LayoutDashboard,
-              path: '/erp/inventorymanagement/dashboard',
-              section: 'inventory-dashboard'
-            },
-            { 
               id: 'inventory-table', 
               label: 'Inventory', 
               icon: Package,
