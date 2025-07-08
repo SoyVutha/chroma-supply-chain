@@ -28,10 +28,18 @@ const ERP = () => {
       const currentPath = window.location.pathname;
       
       // Set section based on current route
-      if (currentPath.includes('/inventorymanagement')) {
-        setActiveSection('inventory');
+      if (currentPath.includes('/inventorymanagement/dashboard')) {
+        setActiveSection('inventory-dashboard');
+      } else if (currentPath.includes('/inventorymanagement/orders')) {
+        setActiveSection('inventory-orders');
+      } else if (currentPath.includes('/inventorymanagement/inventory')) {
+        setActiveSection('inventory-table');
+      } else if (currentPath.includes('/inventorymanagement/settings')) {
+        setActiveSection('inventory-settings');
+      } else if (currentPath.includes('/inventorymanagement')) {
+        setActiveSection('inventory-dashboard'); // Default to dashboard for base route
       } else if (currentPath.includes('/customerservice')) {
-        setActiveSection('customers');
+        setActiveSection('customer-service');
       } else if (currentPath.includes('/orders')) {
         setActiveSection('orders');
       } else if (currentPath.includes('/customer-orders')) {
@@ -46,7 +54,7 @@ const ERP = () => {
         // Default redirect based on role if on base /erp route
         if (currentPath === '/erp' || currentPath === '/erp/') {
           if (userRole === 'inventory_manager') {
-            navigate('/erp/inventorymanagement');
+            navigate('/erp/inventorymanagement/dashboard');
           } else if (userRole === 'customer_service') {
             navigate('/erp/customerservice');
           }
@@ -88,6 +96,86 @@ const ERP = () => {
             <DashboardStats userRole={userRole} />
           </div>
         );
+      
+      // Inventory Management Subroutes
+      case 'inventory-dashboard':
+        return userRole === 'inventory_manager' ? (
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900 mb-8">Inventory Management Dashboard</h1>
+            <DashboardStats userRole={userRole} />
+          </div>
+        ) : (
+          <div className="text-center p-8">
+            <p className="text-gray-600">Access denied. This section is for Inventory Managers only.</p>
+          </div>
+        );
+      
+      case 'inventory-orders':
+        return userRole === 'inventory_manager' ? (
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900 mb-8">Customer Orders</h1>
+            <OrdersTable />
+          </div>
+        ) : (
+          <div className="text-center p-8">
+            <p className="text-gray-600">Access denied. This section is for Inventory Managers only.</p>
+          </div>
+        );
+      
+      case 'inventory-table':
+        return userRole === 'inventory_manager' ? (
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900 mb-8">Inventory Management</h1>
+            <InventoryTable />
+          </div>
+        ) : (
+          <div className="text-center p-8">
+            <p className="text-gray-600">Access denied. This section is for Inventory Managers only.</p>
+          </div>
+        );
+      
+      case 'inventory-settings':
+        return userRole === 'inventory_manager' ? (
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900 mb-8">Inventory Settings</h1>
+            <div className="bg-white rounded-lg shadow p-6">
+              <h2 className="text-xl font-semibold mb-4">Inventory Management Settings</h2>
+              <p className="text-gray-600 mb-4">
+                Configure your inventory management preferences and system settings.
+              </p>
+              <p className="text-sm text-gray-500 mb-4">Current role: <span className="font-medium capitalize">{userRole.replace('_', ' ')}</span></p>
+              
+              <div className="mt-6 p-4 bg-blue-50 rounded-lg">
+                <h3 className="font-medium text-blue-900 mb-2">Inventory Manager Access:</h3>
+                <ul className="text-sm text-blue-800 space-y-1">
+                  <li><strong>Dashboard:</strong> View inventory statistics and summaries</li>
+                  <li><strong>Orders:</strong> Manage and view customer orders</li>
+                  <li><strong>Inventory:</strong> Add, edit, and manage product inventory</li>
+                  <li><strong>Settings:</strong> Configure inventory system preferences</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="text-center p-8">
+            <p className="text-gray-600">Access denied. This section is for Inventory Managers only.</p>
+          </div>
+        );
+      
+      // Customer Service Workspace
+      case 'customer-service':
+        return userRole === 'customer_service' ? (
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900 mb-8">Customer Service Dashboard</h1>
+            <CustomersTable />
+          </div>
+        ) : (
+          <div className="text-center p-8">
+            <p className="text-gray-600">Access denied. This section is for Customer Service only.</p>
+          </div>
+        );
+      
+      // Legacy cases for backward compatibility
       case 'inventory':
         return userRole === 'inventory_manager' ? <InventoryTable /> : (
           <div className="text-center p-8">

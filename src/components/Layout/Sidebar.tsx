@@ -1,13 +1,16 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { 
   LayoutDashboard, 
   Package, 
   ShoppingCart, 
   Users, 
   Settings,
-  Headphones
+  Headphones,
+  ChevronRight,
+  ChevronDown
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -17,30 +20,95 @@ interface SidebarProps {
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ activeSection, onSectionChange, userRole }) => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  
+  const isInventoryManagement = location.pathname.includes('/inventorymanagement');
+  
+  const handleNavigation = (path: string, section: string) => {
+    navigate(path);
+    onSectionChange(section);
+  };
+
   const getMenuItems = () => {
-    const commonItems = [
-      { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard }
-    ];
-
-    const roleSpecificItems = {
-      inventory_manager: [
-        { id: 'inventory', label: 'Inventory', icon: Package },
-        { id: 'orders', label: 'Orders', icon: ShoppingCart }
-      ],
-      customer_service: [
-        { id: 'customers', label: 'Customers', icon: Users },
-        { id: 'tickets', label: 'Support Tickets', icon: Headphones },
-        { id: 'customer-orders', label: 'Customer Orders', icon: ShoppingCart }
-      ]
-    };
-
-    const settingsItem = { id: 'settings', label: 'Settings', icon: Settings };
-
-    return [
-      ...commonItems,
-      ...roleSpecificItems[userRole],
-      settingsItem
-    ];
+    if (userRole === 'inventory_manager') {
+      return [
+        { 
+          id: 'dashboard', 
+          label: 'Main Dashboard', 
+          icon: LayoutDashboard,
+          path: '/erp',
+          section: 'dashboard'
+        },
+        {
+          id: 'inventory-management',
+          label: 'Inventory Management',
+          icon: Package,
+          isExpandable: true,
+          subitems: [
+            { 
+              id: 'inventory-dashboard', 
+              label: 'Dashboard', 
+              icon: LayoutDashboard,
+              path: '/erp/inventorymanagement/dashboard',
+              section: 'inventory-dashboard'
+            },
+            { 
+              id: 'inventory-table', 
+              label: 'Inventory', 
+              icon: Package,
+              path: '/erp/inventorymanagement/inventory',
+              section: 'inventory-table'
+            },
+            { 
+              id: 'inventory-orders', 
+              label: 'Orders', 
+              icon: ShoppingCart,
+              path: '/erp/inventorymanagement/orders',
+              section: 'inventory-orders'
+            },
+            { 
+              id: 'inventory-settings', 
+              label: 'Settings', 
+              icon: Settings,
+              path: '/erp/inventorymanagement/settings',
+              section: 'inventory-settings'
+            }
+          ]
+        }
+      ];
+    } else {
+      return [
+        { 
+          id: 'dashboard', 
+          label: 'Main Dashboard', 
+          icon: LayoutDashboard,
+          path: '/erp',
+          section: 'dashboard'
+        },
+        { 
+          id: 'customer-service', 
+          label: 'Customer Service', 
+          icon: Users,
+          path: '/erp/customerservice',
+          section: 'customer-service'
+        },
+        { 
+          id: 'tickets', 
+          label: 'Support Tickets', 
+          icon: Headphones,
+          path: '/erp/tickets',
+          section: 'tickets'
+        },
+        { 
+          id: 'customer-orders', 
+          label: 'Customer Orders', 
+          icon: ShoppingCart,
+          path: '/erp/customer-orders',
+          section: 'customer-orders'
+        }
+      ];
+    }
   };
 
   const menuItems = getMenuItems();
@@ -56,15 +124,47 @@ const Sidebar: React.FC<SidebarProps> = ({ activeSection, onSectionChange, userR
       
       <nav className="p-4 space-y-2">
         {menuItems.map((item) => (
-          <Button
-            key={item.id}
-            variant={activeSection === item.id ? 'default' : 'ghost'}
-            className="w-full justify-start gap-3"
-            onClick={() => onSectionChange(item.id)}
-          >
-            <item.icon size={18} />
-            {item.label}
-          </Button>
+          <div key={item.id}>
+            {item.isExpandable ? (
+              <div>
+                <Button
+                  variant={isInventoryManagement ? 'default' : 'ghost'}
+                  className="w-full justify-between gap-3"
+                >
+                  <div className="flex items-center gap-3">
+                    <item.icon size={18} />
+                    {item.label}
+                  </div>
+                  {isInventoryManagement ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+                </Button>
+                
+                {isInventoryManagement && item.subitems && (
+                  <div className="ml-4 mt-2 space-y-1">
+                    {item.subitems.map((subitem) => (
+                      <Button
+                        key={subitem.id}
+                        variant={activeSection === subitem.section ? 'default' : 'ghost'}
+                        className="w-full justify-start gap-3 text-sm"
+                        onClick={() => handleNavigation(subitem.path, subitem.section)}
+                      >
+                        <subitem.icon size={16} />
+                        {subitem.label}
+                      </Button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ) : (
+              <Button
+                variant={activeSection === item.section ? 'default' : 'ghost'}
+                className="w-full justify-start gap-3"
+                onClick={() => handleNavigation(item.path, item.section)}
+              >
+                <item.icon size={18} />
+                {item.label}
+              </Button>
+            )}
+          </div>
         ))}
       </nav>
     </div>
