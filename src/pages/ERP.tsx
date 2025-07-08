@@ -26,6 +26,7 @@ const ERP = () => {
   useEffect(() => {
     if (user && userRole) {
       const currentPath = window.location.pathname;
+      console.log('Current path:', currentPath, 'User role:', userRole);
       
       // Set section based on current route
       if (currentPath.includes('/inventorymanagement/orders')) {
@@ -37,6 +38,7 @@ const ERP = () => {
       } else if (currentPath.includes('/inventorymanagement')) {
         setActiveSection('inventory-table'); // Default to inventory table for base route
       } else if (currentPath === '/erp/customerservice' || currentPath.includes('/customerservice')) {
+        console.log('Setting activeSection to customer-service');
         setActiveSection('customer-service');
       } else if (currentPath.includes('/orders')) {
         setActiveSection('orders');
@@ -86,6 +88,7 @@ const ERP = () => {
   };
 
   const renderContent = () => {
+    console.log('renderContent called with activeSection:', activeSection, 'userRole:', userRole);
     switch (activeSection) {
       case 'dashboard':
         return (
