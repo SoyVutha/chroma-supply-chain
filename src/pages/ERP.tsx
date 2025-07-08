@@ -7,7 +7,6 @@ import DashboardStats from '@/components/Dashboard/DashboardStats';
 import InventoryTable from '@/components/Inventory/InventoryTable';
 import OrdersTable from '@/components/Orders/OrdersTable';
 import CustomerOrdersTable from '@/components/Orders/CustomerOrdersTable';
-import ProductionSchedule from '@/components/Production/ProductionSchedule';
 import CustomersTable from '@/components/Customers/CustomersTable';
 import { Button } from '@/components/ui/button';
 import { LogOut } from 'lucide-react';
@@ -49,17 +48,31 @@ const ERP = () => {
           </div>
         );
       case 'inventory':
-        return <InventoryTable />;
+        return userRole === 'inventory_manager' ? <InventoryTable /> : (
+          <div className="text-center p-8">
+            <p className="text-gray-600">Access denied. This section is for Inventory Managers only.</p>
+          </div>
+        );
       case 'orders':
-        return <OrdersTable />;
+        return userRole === 'inventory_manager' ? <OrdersTable /> : (
+          <div className="text-center p-8">
+            <p className="text-gray-600">Access denied. This section is for Inventory Managers only.</p>
+          </div>
+        );
       case 'customer-orders':
-        return <CustomerOrdersTable />;
-      case 'production':
-        return <ProductionSchedule />;
+        return userRole === 'customer_service' ? <CustomerOrdersTable /> : (
+          <div className="text-center p-8">
+            <p className="text-gray-600">Access denied. This section is for Customer Service only.</p>
+          </div>
+        );
       case 'customers':
-        return <CustomersTable />;
+        return userRole === 'customer_service' ? <CustomersTable /> : (
+          <div className="text-center p-8">
+            <p className="text-gray-600">Access denied. This section is for Customer Service only.</p>
+          </div>
+        );
       case 'tickets':
-        return (
+        return userRole === 'customer_service' ? (
           <div>
             <h1 className="text-3xl font-bold text-gray-900 mb-8">Support Tickets</h1>
             <div className="bg-white rounded-lg shadow p-8 text-center">
@@ -67,15 +80,9 @@ const ERP = () => {
               <p className="text-sm text-gray-500">Track and resolve customer support requests efficiently.</p>
             </div>
           </div>
-        );
-      case 'products':
-        return (
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-8">Product Management</h1>
-            <div className="bg-white rounded-lg shadow p-8 text-center">
-              <p className="text-gray-600 mb-4">Product catalog management tools coming soon.</p>
-              <p className="text-sm text-gray-500">Manage product specifications, pricing, and availability.</p>
-            </div>
+        ) : (
+          <div className="text-center p-8">
+            <p className="text-gray-600">Access denied. This section is for Customer Service only.</p>
           </div>
         );
       case 'settings':
@@ -92,9 +99,8 @@ const ERP = () => {
               <div className="mt-6 p-4 bg-blue-50 rounded-lg">
                 <h3 className="font-medium text-blue-900 mb-2">Role Access Rights:</h3>
                 <ul className="text-sm text-blue-800 space-y-1">
-                  <li><strong>Inventory Manager:</strong> Full access to inventory, orders, production, and product management</li>
+                  <li><strong>Inventory Manager:</strong> Full access to inventory and order management</li>
                   <li><strong>Customer Service:</strong> Access to customer management, support tickets, and customer order viewing</li>
-                  <li><strong>Admin:</strong> Complete access to all ERP features and data</li>
                 </ul>
               </div>
             </div>

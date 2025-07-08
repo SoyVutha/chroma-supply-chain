@@ -7,15 +7,13 @@ import {
   ShoppingCart, 
   Users, 
   Settings,
-  Headphones,
-  ClipboardCheck,
-  BarChart3
+  Headphones
 } from 'lucide-react';
 
 interface SidebarProps {
   activeSection: string;
   onSectionChange: (section: string) => void;
-  userRole: 'inventory_manager' | 'customer_service' | 'admin';
+  userRole: 'inventory_manager' | 'customer_service';
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ activeSection, onSectionChange, userRole }) => {
@@ -27,21 +25,11 @@ const Sidebar: React.FC<SidebarProps> = ({ activeSection, onSectionChange, userR
     const roleSpecificItems = {
       inventory_manager: [
         { id: 'inventory', label: 'Inventory', icon: Package },
-        { id: 'orders', label: 'Orders', icon: ShoppingCart },
-        { id: 'products', label: 'Products', icon: BarChart3 },
-        { id: 'production', label: 'Production', icon: ClipboardCheck }
+        { id: 'orders', label: 'Orders', icon: ShoppingCart }
       ],
       customer_service: [
         { id: 'customers', label: 'Customers', icon: Users },
         { id: 'tickets', label: 'Support Tickets', icon: Headphones },
-        { id: 'customer-orders', label: 'Customer Orders', icon: ShoppingCart }
-      ],
-      admin: [
-        { id: 'inventory', label: 'Inventory', icon: Package },
-        { id: 'orders', label: 'Orders', icon: ShoppingCart },
-        { id: 'customers', label: 'Customers', icon: Users },
-        { id: 'tickets', label: 'Support Tickets', icon: Headphones },
-        { id: 'products', label: 'Products', icon: BarChart3 },
         { id: 'customer-orders', label: 'Customer Orders', icon: ShoppingCart }
       ]
     };
