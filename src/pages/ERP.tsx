@@ -36,7 +36,7 @@ const ERP = () => {
         setActiveSection('inventory-settings');
       } else if (currentPath.includes('/inventorymanagement')) {
         setActiveSection('inventory-table'); // Default to inventory table for base route
-      } else if (currentPath.includes('/customerservice')) {
+      } else if (currentPath === '/erp/customerservice' || currentPath.includes('/customerservice')) {
         setActiveSection('customer-service');
       } else if (currentPath.includes('/orders')) {
         setActiveSection('orders');

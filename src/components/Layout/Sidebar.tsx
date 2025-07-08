@@ -33,13 +33,6 @@ const Sidebar: React.FC<SidebarProps> = ({ activeSection, onSectionChange, userR
   const getMenuItems = () => {
     if (userRole === 'inventory_manager') {
       return [
-        { 
-          id: 'dashboard', 
-          label: 'Main Dashboard', 
-          icon: LayoutDashboard,
-          path: '/erp',
-          section: 'dashboard'
-        },
         {
           id: 'inventory-management',
           label: 'Inventory Management',
@@ -47,18 +40,18 @@ const Sidebar: React.FC<SidebarProps> = ({ activeSection, onSectionChange, userR
           isExpandable: true,
           subitems: [
             { 
-              id: 'inventory-table', 
-              label: 'Inventory', 
-              icon: Package,
-              path: '/erp/inventorymanagement/inventory',
-              section: 'inventory-table'
-            },
-            { 
               id: 'inventory-orders', 
               label: 'Orders', 
               icon: ShoppingCart,
               path: '/erp/inventorymanagement/orders',
               section: 'inventory-orders'
+            },
+            { 
+              id: 'inventory-table', 
+              label: 'Inventory', 
+              icon: Package,
+              path: '/erp/inventorymanagement/inventory',
+              section: 'inventory-table'
             },
             { 
               id: 'inventory-settings', 
@@ -72,13 +65,6 @@ const Sidebar: React.FC<SidebarProps> = ({ activeSection, onSectionChange, userR
       ];
     } else {
       return [
-        { 
-          id: 'dashboard', 
-          label: 'Main Dashboard', 
-          icon: LayoutDashboard,
-          path: '/erp',
-          section: 'dashboard'
-        },
         { 
           id: 'customer-service', 
           label: 'Customer Service', 
