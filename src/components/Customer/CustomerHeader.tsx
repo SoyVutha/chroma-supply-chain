@@ -25,7 +25,7 @@ const CustomerHeader: React.FC<CustomerHeaderProps> = ({ cartItemCount, onCartCl
       <div className="container mx-auto px-4 py-4">
         <div className="flex justify-between items-center">
           <div>
-            <h1 className="text-2xl font-bold text-blue-600">Metaflow Store</h1>
+            <h1 className="text-2xl font-bold text-blue-600">MetalFlow Store</h1>
             <p className="text-sm text-gray-600">Premium Manufacturing Products</p>
           </div>
           

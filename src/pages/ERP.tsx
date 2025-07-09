@@ -147,7 +147,7 @@ const ERP = () => {
           <div className="flex justify-between items-center">
             <div>
               <h2 className="text-lg font-semibold text-gray-900">
-                Welcome to Metaflow ERP, {user.user_metadata?.name || user.email?.split('@')[0]}
+                Welcome to MetalFlow ERP, {user.user_metadata?.name || user.email?.split('@')[0]}
               </h2>
               <p className="text-sm text-gray-600 capitalize">
                 {userRole.replace('_', ' ')} Dashboard - Manage Operations Efficiently

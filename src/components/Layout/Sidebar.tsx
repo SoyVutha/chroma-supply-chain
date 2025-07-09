@@ -71,7 +71,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeSection, onSectionChange, userR
   return (
     <div className="fixed left-0 top-0 h-full w-64 bg-white border-r border-gray-200 shadow-sm">
       <div className="p-6 border-b border-gray-200">
-        <h1 className="text-2xl font-bold text-blue-600">Metaflow ERP</h1>
+        <h1 className="text-2xl font-bold text-blue-600">MetalFlow ERP</h1>
         <p className="text-sm text-gray-600 capitalize mt-1">
           {userRole.replace('_', ' ')} Portal
         </p>
