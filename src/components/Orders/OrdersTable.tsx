@@ -41,11 +41,11 @@ const OrdersTable: React.FC = () => {
           id,
           created_at,
           status,
-          customers!inner(name, email),
+          customers!orders_customer_id_fkey(name, email),
           order_items(
             quantity,
             price,
-            products(name)
+            products!order_items_product_id_fkey(name)
           )
         `)
         .order('created_at', { ascending: false });
