@@ -4,7 +4,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
-import { ShoppingCart, Search, Eye, Edit } from 'lucide-react';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { ShoppingCart, Search, Eye, Edit, ChevronDown } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import OrderItemsList from './OrderItemsList';
@@ -79,6 +80,32 @@ const OrdersTable: React.FC = () => {
       });
     } finally {
       setLoading(false);
+    }
+  };
+
+  const updateOrderStatus = async (orderId: string, newStatus: string) => {
+    try {
+      const { error } = await supabase
+        .from('orders')
+        .update({ status: newStatus })
+        .eq('id', orderId);
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: `Order status updated to ${newStatus}`,
+      });
+
+      // Refresh orders to show updated data
+      fetchOrders();
+    } catch (error: any) {
+      console.error('Error updating order status:', error);
+      toast({
+        title: "Error",
+        description: "Failed to update order status",
+        variant: "destructive"
+      });
     }
   };
 
@@ -229,10 +256,47 @@ const OrdersTable: React.FC = () => {
                       {new Date(order.created_at).toLocaleDateString()}
                     </td>
                     <td className="p-3">
-                      <Button variant="outline" size="sm" className="flex items-center gap-1">
-                        <Eye size={14} />
-                        View Details
-                      </Button>
+                      <div className="flex gap-2">
+                        <Button variant="outline" size="sm" className="flex items-center gap-1">
+                          <Eye size={14} />
+                          View Details
+                        </Button>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="outline" size="sm" className="flex items-center gap-1">
+                              <Edit size={14} />
+                              Update Status
+                              <ChevronDown size={12} />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent>
+                            <DropdownMenuItem 
+                              onClick={() => updateOrderStatus(order.id, 'pending')}
+                              disabled={order.status === 'pending'}
+                            >
+                              Set to Pending
+                            </DropdownMenuItem>
+                            <DropdownMenuItem 
+                              onClick={() => updateOrderStatus(order.id, 'processing')}
+                              disabled={order.status === 'processing'}
+                            >
+                              Set to Processing
+                            </DropdownMenuItem>
+                            <DropdownMenuItem 
+                              onClick={() => updateOrderStatus(order.id, 'completed')}
+                              disabled={order.status === 'completed'}
+                            >
+                              Mark as Completed
+                            </DropdownMenuItem>
+                            <DropdownMenuItem 
+                              onClick={() => updateOrderStatus(order.id, 'cancelled')}
+                              disabled={order.status === 'cancelled'}
+                            >
+                              Cancel Order
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </div>
                     </td>
                   </tr>
                 ))}
