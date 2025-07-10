@@ -39,11 +39,12 @@ const CustomerOrdersTable: React.FC = () => {
           id,
           created_at,
           status,
-          customers!orders_customer_id_fkey(name, email),
+          customer_id,
+          customers(name, email),
           order_items(
             quantity,
             price,
-            products!order_items_product_id_fkey(name)
+            products(name)
           )
         `)
         .order('created_at', { ascending: false });
@@ -56,15 +57,15 @@ const CustomerOrdersTable: React.FC = () => {
         created_at: order.created_at,
         status: order.status,
         customer: {
-          name: order.customers.name,
-          email: order.customers.email
+          name: order.customers?.name || 'Unknown Customer',
+          email: order.customers?.email || 'Unknown Email'
         },
-        items: order.order_items.map(item => ({
+        items: (order.order_items || []).map(item => ({
           product_name: item.products?.name || 'Unknown Product',
           quantity: item.quantity,
           price: item.price
         })),
-        total_amount: order.order_items.reduce((sum, item) => sum + (item.quantity * item.price), 0)
+        total_amount: (order.order_items || []).reduce((sum, item) => sum + (item.quantity * item.price), 0)
       }));
 
       setOrders(transformedOrders);
